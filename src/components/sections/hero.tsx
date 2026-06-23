@@ -1,9 +1,11 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ChevronDown, Star } from "lucide-react";
+import { CalendarCheck, ChevronDown, Star } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { CtaButtons } from "@/components/shared/cta-buttons";
 
 const easing = [0.21, 0.47, 0.32, 0.98] as const;
@@ -117,9 +119,19 @@ export function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="show"
-            className="mt-9"
+            className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
           >
-            <CtaButtons callVariant="glass" />
+            <Button asChild size="lg">
+              <Link href="/book" aria-label="Book a bike">
+                <CalendarCheck className="size-[18px]" />
+                Book now
+              </Link>
+            </Button>
+            <CtaButtons
+              showCall={false}
+              whatsappVariant="glass"
+              whatsappLabel="WhatsApp Us"
+            />
           </motion.div>
 
           <motion.dl
