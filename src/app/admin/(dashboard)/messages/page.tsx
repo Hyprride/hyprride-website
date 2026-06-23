@@ -1,10 +1,24 @@
-import { ComingSoon } from "@/features/dashboard/components/coming-soon";
+import { getRecentCustomers } from "@/features/dashboard/queries";
+import { MessagesInbox } from "@/features/dashboard/components/messages/messages-inbox";
 
-export default function MessagesPage() {
+export const metadata = { title: "Messages" };
+export const dynamic = "force-dynamic";
+
+export default async function MessagesPage() {
+  const contacts = await getRecentCustomers(20);
+
   return (
-    <ComingSoon
-      title="Messages"
-      description="A unified inbox for WhatsApp and Instagram DMs with conversation history and customer timelines is planned."
-    />
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-xl font-semibold tracking-tight text-foreground">
+          Messages
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Unified inbox for WhatsApp and Instagram — architecture ready,
+          integrations pending.
+        </p>
+      </div>
+      <MessagesInbox contacts={contacts} />
+    </div>
   );
 }

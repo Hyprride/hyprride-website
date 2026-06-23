@@ -5,16 +5,19 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-export function BookingsPagination({
+/** URL-driven pagination shared across dashboard tables. */
+export function DataPagination({
   page,
   pageCount,
   total,
   pageSize,
+  label = "results",
 }: {
   page: number;
   pageCount: number;
   total: number;
   pageSize: number;
+  label?: string;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -34,12 +37,12 @@ export function BookingsPagination({
     <div className="flex items-center justify-between gap-3 border-t border-border px-4 py-3">
       <p className="text-sm text-muted-foreground">
         {total === 0 ? (
-          "No bookings"
+          `No ${label}`
         ) : (
           <>
             Showing <span className="font-medium text-foreground">{from}</span>–
             <span className="font-medium text-foreground">{to}</span> of{" "}
-            <span className="font-medium text-foreground">{total}</span>
+            <span className="font-medium text-foreground">{total}</span> {label}
           </>
         )}
       </p>

@@ -1,10 +1,22 @@
-import { ComingSoon } from "@/features/dashboard/components/coming-soon";
+import { getCurrentUser } from "@/features/auth/queries";
+import { SettingsPanel } from "@/features/dashboard/components/settings/settings-panel";
 
-export default function SettingsPage() {
+export const metadata = { title: "Settings" };
+
+export default async function SettingsPage() {
+  const user = await getCurrentUser();
+
   return (
-    <ComingSoon
-      title="Settings"
-      description="Business info, pricing, taxes, notifications, admin users, roles and theme preferences will live here."
-    />
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-xl font-semibold tracking-tight text-foreground">
+          Settings
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Business, pricing, notifications, team and appearance.
+        </p>
+      </div>
+      <SettingsPanel userEmail={user?.email ?? "admin"} />
+    </div>
   );
 }

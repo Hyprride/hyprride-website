@@ -7,7 +7,7 @@ import {
 } from "@/features/dashboard/bookings-queries";
 import { BookingsFilters } from "@/features/dashboard/components/bookings/bookings-filters";
 import { BookingsTable } from "@/features/dashboard/components/bookings/bookings-table";
-import { BookingsPagination } from "@/features/dashboard/components/bookings/bookings-pagination";
+import { DataPagination } from "@/features/dashboard/components/data-pagination";
 import { BookingsTableSkeleton } from "@/features/dashboard/components/bookings/table-skeleton";
 
 export const metadata = { title: "Bookings" };
@@ -56,11 +56,12 @@ async function BookingsTableSection({
   return (
     <Card className="overflow-hidden p-0">
       <BookingsTable rows={result.rows} />
-      <BookingsPagination
+      <DataPagination
         page={result.page}
         pageCount={result.pageCount}
         total={result.total}
         pageSize={result.pageSize}
+        label="bookings"
       />
     </Card>
   );
