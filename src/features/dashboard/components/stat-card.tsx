@@ -2,13 +2,14 @@ import { ArrowDownRight, ArrowUpRight, type LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
-import { AnimatedCounter } from "./animated-counter";
+import { AnimatedCounter, type CounterFormat } from "./animated-counter";
 
 type StatCardProps = {
   label: string;
   value: number;
   icon: LucideIcon;
-  format?: (n: number) => string;
+  /** Serializable formatter key (functions can't cross the RSC boundary). */
+  format?: CounterFormat;
   /** Optional growth percentage (e.g. month-over-month). */
   delta?: number;
   accent?: string;

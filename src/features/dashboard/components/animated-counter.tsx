@@ -3,14 +3,25 @@
 import * as React from "react";
 import { animate, useInView } from "framer-motion";
 
+import { formatCurrency } from "@/lib/utils/format";
+
+/** Serializable formatter keys — safe to pass across the server→client boundary. */
+export type CounterFormat = "number" | "currency" | "percent";
+
+const FORMATTERS: Record<CounterFormat, (n: number) => string> = {
+  number: (n) => n.toLocaleString("en-IN"),
+  currency: (n) => formatCurrency(n),
+  percent: (n) => `${n}%`,
+};
+
 /** Counts up to `value` once when scrolled into view. */
 export function AnimatedCounter({
   value,
-  format = (n) => n.toLocaleString("en-IN"),
+  format = "number",
   duration = 1,
 }: {
   value: number;
-  format?: (n: number) => string;
+  format?: CounterFormat;
   duration?: number;
 }) {
   const ref = React.useRef<HTMLSpanElement>(null);
@@ -27,5 +38,5 @@ export function AnimatedCounter({
     return () => controls.stop();
   }, [inView, value, duration]);
 
-  return <span ref={ref}>{format(Math.round(display))}</span>;
+  return <span ref={ref}>{FORMATTERS[format](Math.round(display))}</span>;
 }

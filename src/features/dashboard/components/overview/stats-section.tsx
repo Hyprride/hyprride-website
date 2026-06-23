@@ -8,7 +8,6 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-import { formatCurrency } from "@/lib/utils/format";
 import { getDashboardStats } from "../../queries";
 import { StatCard } from "../stat-card";
 
@@ -33,7 +32,7 @@ export async function StatsSection() {
         label="Revenue"
         value={stats.revenue}
         icon={IndianRupee}
-        format={(n) => formatCurrency(n)}
+        format="currency"
         accent="text-emerald-600 bg-emerald-500/10 dark:text-emerald-400"
       />
       <StatCard
@@ -58,7 +57,7 @@ export async function StatsSection() {
         label="Month-over-month"
         value={stats.growthPct}
         icon={TrendingUp}
-        format={(n) => `${n}%`}
+        format="percent"
         delta={stats.growthPct}
         accent="text-brand bg-brand/10"
       />

@@ -268,12 +268,19 @@ function MonthGrid({
           const list = eventsByDay.get(dayKey(day)) ?? [];
           const muted = !isSameMonth(day, cursor);
           return (
-            <button
-              type="button"
+            <div
               key={day.toISOString()}
+              role="button"
+              tabIndex={0}
               onClick={() => onDay(day)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onDay(day);
+                }
+              }}
               className={cn(
-                "min-h-[104px] border-b border-r border-border p-1.5 text-left align-top transition-colors last:border-r-0 hover:bg-muted/40 [&:nth-child(7n)]:border-r-0",
+                "min-h-[104px] cursor-pointer border-b border-r border-border p-1.5 text-left align-top transition-colors last:border-r-0 hover:bg-muted/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring [&:nth-child(7n)]:border-r-0",
                 muted && "bg-muted/20",
               )}
             >
@@ -299,7 +306,7 @@ function MonthGrid({
                   </span>
                 )}
               </div>
-            </button>
+            </div>
           );
         })}
       </div>
