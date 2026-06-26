@@ -1,0 +1,85 @@
+import { format, formatDistanceToNow, isValid, parseISO } from "date-fns";
+
+/**
+ * Date/time helpers for the booking flow.
+ *
+ * The form keeps `date` ("YYYY-MM-DD") and `time` ("HH:mm") as separate
+ * strings. These helpers combine them into a real Date in the visitor's local
+ * timezone and produce the duration breakdown shown live in the UI.
+ */
+
+export function combineDateTime(
+  date: string,
+  time: string,
+): Date | null {
+  if (!date || !time) return null;
+  const candidate = new Date(`${date}T${time}`);
+  return isValid(candidate) ? candidate : null;
+}
+
+export type Duration = {
+  totalMinutes: number;
+  totalHours: number; // rounded to 2 decimals
+  days: number;
+  hours: number;
+  minutes: number;
+  /** e.g. "2 days 3 hrs" / "5 hrs 30 mins" / "45 mins" */
+  label: string;
+};
+
+export function getDuration(start: Date, end: Date): Duration {
+  const totalMinutes = Math.max(
+    0,
+    Math.round((end.getTime() - start.getTime()) / 60000),
+  );
+  const days = Math.floor(totalMinutes / (60 * 24));
+  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+  const minutes = totalMinutes % 60;
+
+  const parts: string[] = [];
+  if (days) parts.push(`${days} ${days === 1 ? "day" : "days"}`);
+  if (hours) parts.push(`${hours} ${hours === 1 ? "hr" : "hrs"}`);
+  if (minutes) parts.push(`${minutes} ${minutes === 1 ? "min" : "mins"}`);
+
+  return {
+    totalMinutes,
+    totalHours: Math.round((totalMinutes / 60) * 100) / 100,
+    days,
+    hours,
+    minutes,
+    label: parts.length ? parts.join(" ") : "0 mins",
+  };
+}
+
+/** Today's date as "YYYY-MM-DD" in local time — used for `min` on date inputs. */
+export function todayISODate(): string {
+  return format(new Date(), "yyyy-MM-dd");
+}
+
+/* ── Display formatters (accept Date or ISO string) ─────────────────────── */
+
+function toDate(value: Date | string): Date | null {
+  if (value instanceof Date) return isValid(value) ? value : null;
+  const parsed = parseISO(value);
+  return isValid(parsed) ? parsed : null;
+}
+
+export function formatDateTime(value: Date | string): string {
+  const d = toDate(value);
+  return d ? format(d, "d MMM yyyy, h:mm a") : "—";
+}
+
+export function formatDateShort(value: Date | string): string {
+  const d = toDate(value);
+  return d ? format(d, "d MMM yyyy") : "—";
+}
+
+export function formatTime(value: Date | string): string {
+  const d = toDate(value);
+  return d ? format(d, "h:mm a") : "—";
+}
+
+export function formatRelative(value: Date | string): string {
+  const d = toDate(value);
+  return d ? `${formatDistanceToNow(d)} ago` : "—";
+}

@@ -1,14 +1,15 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, Moon, Sun, X } from "lucide-react";
-import { useTheme } from "next-themes";
+import { CalendarCheck, Menu, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { contact, navLinks, whatsappLink } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { Logo, WhatsAppIcon } from "@/components/shared/icons";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 
 export function Navbar() {
   const [scrolled, setScrolled] = React.useState(false);
@@ -56,7 +57,12 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button asChild size="sm" className="hidden sm:inline-flex">
+          <Button
+            asChild
+            size="sm"
+            variant="outline"
+            className="hidden sm:inline-flex"
+          >
             <a
               href={whatsappLink()}
               target="_blank"
@@ -66,6 +72,12 @@ export function Navbar() {
               <WhatsAppIcon className="size-4" />
               WhatsApp
             </a>
+          </Button>
+          <Button asChild size="sm" className="hidden sm:inline-flex">
+            <Link href="/book" aria-label="Book a bike">
+              <CalendarCheck className="size-4" />
+              Book now
+            </Link>
           </Button>
 
           <button
@@ -115,6 +127,12 @@ export function Navbar() {
               ))}
               <div className="mt-6 flex flex-col gap-3">
                 <Button asChild size="lg">
+                  <Link href="/book" onClick={() => setOpen(false)}>
+                    <CalendarCheck className="size-[18px]" />
+                    Book a bike
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline">
                   <a
                     href={whatsappLink()}
                     target="_blank"
@@ -136,32 +154,5 @@ export function Navbar() {
         ) : null}
       </AnimatePresence>
     </header>
-  );
-}
-
-function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
-
-  const isDark = resolvedTheme === "dark";
-
-  return (
-    <button
-      type="button"
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label="Toggle dark mode"
-      className="grid size-11 place-items-center rounded-full border border-border text-foreground transition-colors hover:bg-muted"
-    >
-      {mounted ? (
-        isDark ? (
-          <Sun className="size-[18px]" />
-        ) : (
-          <Moon className="size-[18px]" />
-        )
-      ) : (
-        <span className="size-[18px]" />
-      )}
-    </button>
   );
 }

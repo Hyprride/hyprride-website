@@ -2,11 +2,7 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: "class",
-  content: [
-    "./src/app/**/*.{ts,tsx}",
-    "./src/components/**/*.{ts,tsx}",
-    "./src/lib/**/*.{ts,tsx}",
-  ],
+  content: ["./src/**/*.{ts,tsx}"],
   theme: {
     container: {
       center: true,
@@ -60,8 +56,12 @@ const config: Config = {
         "8xl": "88rem",
       },
       boxShadow: {
-        soft: "0 2px 8px -2px rgba(0,0,0,0.08), 0 12px 40px -12px rgba(0,0,0,0.12)",
+        soft: "0 1px 2px -1px rgba(0,0,0,0.06), 0 10px 30px -14px rgba(0,0,0,0.18)",
+        elevated:
+          "0 2px 4px -2px rgba(0,0,0,0.08), 0 24px 56px -20px rgba(0,0,0,0.30)",
         glow: "0 0 0 1px rgba(230,57,70,0.12), 0 20px 60px -20px rgba(230,57,70,0.45)",
+        "glow-sm":
+          "0 0 0 1px rgba(230,57,70,0.14), 0 10px 28px -12px rgba(230,57,70,0.40)",
       },
       keyframes: {
         "accordion-down": {

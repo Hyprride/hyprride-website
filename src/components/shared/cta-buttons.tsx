@@ -13,6 +13,8 @@ type CtaButtonsProps = {
   callVariant?: "primary" | "secondary" | "glass" | "outline";
   whatsappLabel?: string;
   callLabel?: string;
+  /** Hide the "Call Now" button (e.g. when a Book CTA leads the row). */
+  showCall?: boolean;
 };
 
 /**
@@ -27,6 +29,7 @@ export function CtaButtons({
   callVariant = "glass",
   whatsappLabel = "WhatsApp Us",
   callLabel = "Call Now",
+  showCall = true,
 }: CtaButtonsProps) {
   return (
     <div className={cn("flex flex-col gap-3 sm:flex-row sm:items-center", className)}>
@@ -41,12 +44,14 @@ export function CtaButtons({
           {whatsappLabel}
         </a>
       </Button>
-      <Button asChild size={size} variant={callVariant}>
-        <a href={contact.phoneHref} aria-label={`Call HYPRRIDE at ${contact.phone}`}>
-          <Phone className="size-[18px]" />
-          {callLabel}
-        </a>
-      </Button>
+      {showCall && (
+        <Button asChild size={size} variant={callVariant}>
+          <a href={contact.phoneHref} aria-label={`Call HYPRRIDE at ${contact.phone}`}>
+            <Phone className="size-[18px]" />
+            {callLabel}
+          </a>
+        </Button>
+      )}
     </div>
   );
 }

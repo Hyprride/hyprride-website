@@ -1,9 +1,12 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ChevronDown, Star } from "lucide-react";
+import { CalendarCheck, ChevronDown, Star } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { CtaButtons } from "@/components/shared/cta-buttons";
 
 const easing = [0.21, 0.47, 0.32, 0.98] as const;
@@ -34,31 +37,35 @@ export function Hero() {
       ref={ref}
       className="relative flex min-h-[100svh] items-center overflow-hidden bg-[#070708] text-white"
     >
-      {/* Background layers */}
+      {/* Background — TVS Apache RTR 160 photo with cinematic dark scrims */}
       <div className="pointer-events-none absolute inset-0">
         <motion.div
-          style={{ y: yGlow }}
-          className="absolute left-1/2 top-[-15%] h-[60vh] w-[60vh] -translate-x-1/2 rounded-full bg-brand/30 blur-[120px]"
-        />
+          initial={{ opacity: 0, scale: 1.06 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.6, ease: easing }}
+          className="absolute inset-0"
+        >
+          <Image
+            src="/hero-bike.jpg"
+            alt="Premium motorcycle ready to ride with HYPRRIDE"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </motion.div>
+
+        {/* Left→right scrim keeps the headline readable over the bike */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#070708] via-[#070708]/80 to-[#070708]/10" />
+        {/* Top + bottom fade to blend into the page */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#070708] via-transparent to-[#070708]/60" />
+
+        {/* Brand glow accent */}
         <motion.div
           style={{ y: yGlow }}
-          className="absolute right-[-10%] top-[20%] h-[40vh] w-[40vh] rounded-full bg-brand-700/30 blur-[120px]"
+          className="absolute right-[-6%] top-[8%] h-[44vh] w-[44vh] rounded-full bg-brand/25 blur-[130px]"
         />
-        <div className="absolute inset-0 bg-grid [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#070708]" />
       </div>
-
-      {/* Floating bike silhouette */}
-      <motion.div
-        aria-hidden="true"
-        initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.4, ease: easing, delay: 0.2 }}
-        style={{ y: yGlow }}
-        className="pointer-events-none absolute inset-x-0 bottom-[8%] mx-auto flex justify-center"
-      >
-        <HeroBike className="w-[min(92vw,920px)] animate-float text-white/[0.07]" />
-      </motion.div>
 
       <motion.div
         style={{ y: yContent, opacity }}
@@ -117,9 +124,19 @@ export function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="show"
-            className="mt-9"
+            className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
           >
-            <CtaButtons callVariant="glass" />
+            <Button asChild size="lg">
+              <Link href="/book" aria-label="Book a bike">
+                <CalendarCheck className="size-[18px]" />
+                Book now
+              </Link>
+            </Button>
+            <CtaButtons
+              showCall={false}
+              whatsappVariant="glass"
+              whatsappLabel="WhatsApp Us"
+            />
           </motion.div>
 
           <motion.dl
@@ -170,37 +187,5 @@ export function Hero() {
         <ChevronDown className="size-4" />
       </motion.a>
     </section>
-  );
-}
-
-function HeroBike({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 600 240"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-    >
-      <g
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <circle cx="130" cy="180" r="52" />
-        <circle cx="130" cy="180" r="16" className="opacity-50" />
-        <circle cx="470" cy="180" r="52" />
-        <circle cx="470" cy="180" r="16" className="opacity-50" />
-        <path d="M130 180 L 270 168 L 320 180" />
-        <path d="M250 120 L 300 180" />
-        <path d="M170 112 C 220 92 300 92 350 100" />
-        <path d="M350 100 C 380 92 430 92 450 116" />
-        <path d="M170 112 L 140 128" />
-        <path d="M450 116 C 500 104 528 116 520 148" />
-        <path d="M505 124 L 470 180" />
-        <path d="M450 116 L 482 80" />
-        <path d="M468 80 H 520" />
-      </g>
-    </svg>
   );
 }
