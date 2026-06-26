@@ -17,8 +17,9 @@ export default async function AdminLoginPage({
   const { next } = await searchParams;
 
   return (
-    <div className="grid min-h-dvh place-items-center bg-muted/30 px-5 py-12">
-      <div className="w-full max-w-sm">
+    <div className="relative grid min-h-dvh place-items-center overflow-hidden bg-background px-5 py-12">
+      <div className="pointer-events-none absolute left-1/2 top-1/3 size-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand/10 blur-[130px]" />
+      <div className="relative w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center text-center">
           <Link href="/" aria-label="HYPRRIDE home">
             <Logo />
@@ -31,7 +32,7 @@ export default async function AdminLoginPage({
           </p>
         </div>
 
-        <div className="rounded-3xl border border-border bg-card p-6 shadow-soft sm:p-7">
+        <div className="surface-sheen rounded-3xl border border-border bg-card p-6 shadow-elevated sm:p-7">
           <LoginForm next={next} />
         </div>
 

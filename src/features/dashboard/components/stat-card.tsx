@@ -27,9 +27,17 @@ export function StatCard({
   const positive = (delta ?? 0) >= 0;
 
   return (
-    <Card className="p-5">
-      <div className="flex items-start justify-between gap-3">
-        <span className={cn("grid size-10 place-items-center rounded-xl", accent)}>
+    <Card className="group surface-sheen relative overflow-hidden p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated">
+      {/* hover glow */}
+      <div className="pointer-events-none absolute -right-8 -top-8 size-24 rounded-full bg-brand/10 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
+
+      <div className="relative flex items-start justify-between gap-3">
+        <span
+          className={cn(
+            "grid size-11 place-items-center rounded-xl ring-1 ring-inset ring-black/5 dark:ring-white/10",
+            accent,
+          )}
+        >
           <Icon className="size-5" />
         </span>
         {showDelta && (
@@ -50,10 +58,10 @@ export function StatCard({
           </span>
         )}
       </div>
-      <p className="mt-4 text-2xl font-semibold tracking-tight text-foreground">
+      <p className="relative mt-4 text-[1.75rem] font-semibold leading-none tracking-tight text-foreground">
         <AnimatedCounter value={value} format={format} />
       </p>
-      <p className="mt-1 text-sm text-muted-foreground">{label}</p>
+      <p className="relative mt-1.5 text-sm text-muted-foreground">{label}</p>
     </Card>
   );
 }

@@ -22,7 +22,7 @@ export function FormSection({
   children,
 }: FormSectionProps) {
   return (
-    <section className="rounded-3xl border border-border bg-card p-6 shadow-soft sm:p-7">
+    <section className="surface-sheen rounded-3xl border border-border bg-card p-6 shadow-soft sm:p-7">
       <header className="mb-5 flex items-start gap-3.5">
         <div
           className={cn(

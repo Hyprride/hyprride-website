@@ -32,9 +32,9 @@ export function DashboardShell({
   const title = activeNavLabel(pathname);
 
   return (
-    <div className="min-h-dvh bg-muted/30">
+    <div className="min-h-dvh bg-app">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-border bg-card lg:flex">
+      <aside className="surface-sheen fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-border bg-card lg:flex">
         <SidebarContent
           pathname={pathname}
           userEmail={userEmail}
@@ -132,12 +132,15 @@ function SidebarContent({
                 <Link
                   href={item.href}
                   className={cn(
-                    "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                    "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all",
                     active
-                      ? "bg-brand/10 text-brand"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                      ? "bg-brand/10 font-semibold text-brand"
+                      : "font-medium text-muted-foreground hover:bg-muted hover:text-foreground",
                   )}
                 >
+                  {active && (
+                    <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand" />
+                  )}
                   <item.icon className="size-[18px] shrink-0" />
                   <span className="flex-1">{item.label}</span>
                   {item.soon && (
