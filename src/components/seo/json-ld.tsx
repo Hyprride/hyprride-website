@@ -1,5 +1,5 @@
 import { contact, siteConfig } from "@/lib/site";
-import { faqs, fleet } from "@/lib/data";
+import { faqs, fleet, googleRating } from "@/lib/data";
 
 /**
  * Structured data for rich results: LocalBusiness, the rentable fleet,
@@ -46,6 +46,17 @@ export function JsonLd() {
         },
         sameAs: [contact.instagram],
         slogan: siteConfig.tagline,
+        ...(googleRating.total > 0
+          ? {
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: googleRating.rating.toFixed(1),
+                reviewCount: googleRating.total,
+                bestRating: 5,
+                worstRating: 1,
+              },
+            }
+          : {}),
       },
       ...fleet.map((bike) => ({
         "@type": "Product",
