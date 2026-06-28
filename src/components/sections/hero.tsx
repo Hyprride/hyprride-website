@@ -8,6 +8,7 @@ import { CalendarCheck, ChevronDown, Star } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { CtaButtons } from "@/components/shared/cta-buttons";
+import { googleRating } from "@/lib/data";
 
 const easing = [0.21, 0.47, 0.32, 0.98] as const;
 
@@ -77,14 +78,29 @@ export function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="show"
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white/70 backdrop-blur-md"
           >
-            <span className="flex items-center gap-0.5 text-brand">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="size-3 fill-current" />
-              ))}
-            </span>
-            HYPRRIDE · Hyderabad's Smart Bike Rentals
+            <a
+              href={googleRating.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Rated ${googleRating.rating.toFixed(1)} out of 5 on Google${
+                googleRating.total > 0 ? ` from ${googleRating.total} reviews` : ""
+              }`}
+              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-semibold tracking-[0.04em] text-white/80 backdrop-blur-md transition-colors hover:border-white/30 hover:text-white"
+            >
+              <span className="flex items-center gap-0.5 text-brand">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="size-3 fill-current" />
+                ))}
+              </span>
+              <span className="font-bold text-white">
+                {googleRating.rating.toFixed(1)}
+              </span>
+              <span className="text-white/55">
+                on Google
+                {googleRating.total > 0 ? ` · ${googleRating.total} reviews` : ""}
+              </span>
+            </a>
           </motion.div>
 
           <h1 className="mt-6 font-display text-[15vw] font-extrabold leading-[0.92] tracking-tight sm:text-7xl md:text-8xl lg:text-[7.5rem]">

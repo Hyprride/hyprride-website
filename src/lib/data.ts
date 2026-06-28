@@ -303,8 +303,30 @@ export type Testimonial = {
   name: string;
   role: string;
   initials: string;
+  /** Optional per-review star count (1–5). Defaults to 5 if omitted. */
+  rating?: number;
+  /** Optional, e.g. "2 weeks ago" — shown under the name when present. */
+  date?: string;
 };
 
+/**
+ * Aggregate Google rating shown in the hero badge + testimonials heading.
+ * ── EDIT THESE MANUALLY to match your live Google listing ──
+ *   rating → your star average (e.g. 4.9)
+ *   total  → total number of Google reviews
+ *   url    → your Google Maps listing (used for the "read reviews" links)
+ */
+export const googleRating: { rating: number; total: number; url: string } = {
+  rating: 5.0,
+  total: 0,
+  url: "https://maps.app.goo.gl/JB8WNXKwanKzzUnU9",
+};
+
+/**
+ * ── REPLACE THESE WITH REAL GOOGLE REVIEWS ──
+ * Copy the text + name from your Google reviews. `initials` is the avatar
+ * fallback; `rating` and `date` are optional.
+ */
 export const testimonials: Testimonial[] = [
   {
     quote:
