@@ -2,7 +2,6 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { FloatingWhatsApp } from "@/components/shared/floating-whatsapp";
 import { Hero } from "@/components/sections/hero";
-import { Trust } from "@/components/sections/trust";
 import { Fleet } from "@/components/sections/fleet";
 import { Story } from "@/components/sections/story";
 import { Why } from "@/components/sections/why";
@@ -18,7 +17,6 @@ export default function HomePage() {
       <Navbar />
       <main>
         <Hero />
-        <Trust />
         <Fleet />
         <Story />
         <Why />
