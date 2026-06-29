@@ -75,6 +75,21 @@ export const SLAB_HOURS = [1, 3, 5, 7, 12, 24] as const;
 export type SlabHours = (typeof SLAB_HOURS)[number];
 
 /**
+ * GST rate shown alongside estimates. Display only — it is NOT added into the
+ * stored `estimated_amount`; the booking service computes the authoritative tax.
+ */
+export const GST_RATE_PERCENT = 18;
+
+/** Per-km charge beyond the included limit when unlimited km isn't unlocked. */
+export const EXTRA_KM_CHARGE = 4;
+
+/** Refundable security deposit (₹), by pickup/usage location. */
+export const SECURITY_DEPOSIT = {
+  withinHyd: 1000,
+  outsideHyd: 3000,
+} as const;
+
+/**
  * How a website lead status maps onto the booking service's lifecycle. The two
  * enums mean different things and stay separate — this is documentation of the
  * bridge, used when a "Confirmed" lead is pushed to the booking service.

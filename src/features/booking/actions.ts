@@ -104,6 +104,8 @@ export async function createBooking(
         special_notes: booking.specialNotes,
         vehicle_interest: booking.vehicleInterest,
         preferred_slab_hours: booking.preferredSlabHours,
+        is_unlimited_km: booking.isUnlimitedKm,
+        unlimited_km_charge: booking.unlimitedKmCharge,
         estimated_amount: booking.estimatedAmount,
         status: "New",
       })

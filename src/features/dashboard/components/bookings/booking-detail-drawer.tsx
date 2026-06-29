@@ -162,10 +162,22 @@ export function BookingDetailDrawer({
                     }
                   />
                   <Field
+                    label="Unlimited km"
+                    value={
+                      detail.is_unlimited_km
+                        ? `Yes${
+                            detail.unlimited_km_charge != null
+                              ? ` (+${formatCurrency(detail.unlimited_km_charge)})`
+                              : ""
+                          }`
+                        : "No"
+                    }
+                  />
+                  <Field
                     label="Estimate"
                     value={
                       detail.estimated_amount != null
-                        ? formatCurrency(detail.estimated_amount)
+                        ? `${formatCurrency(detail.estimated_amount)} (+18% GST)`
                         : "—"
                     }
                   />

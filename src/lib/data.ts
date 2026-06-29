@@ -276,6 +276,39 @@ export function estimateForDuration(
   return total;
 }
 
+/** Included km per slab (bike-independent across the current fleet). */
+const SLAB_KM: Record<number, number> = {
+  1: 15,
+  3: 40,
+  5: 60,
+  7: 80,
+  12: 100,
+  24: 120,
+};
+
+/** Included km for an actual rental duration (full days + remainder slab). */
+export function kmForDuration(totalHours: number): number {
+  if (totalHours <= 0) return 0;
+  const fullDays = Math.floor(totalHours / 24);
+  const remHours = totalHours - fullDays * 24;
+  return (
+    fullDays * SLAB_KM[24] + (remHours > 0 ? SLAB_KM[billingSlabHours(remHours)] : 0)
+  );
+}
+
+/**
+ * One-time fee to unlock unlimited km, by slab: ₹50 for 1/3/5/7h, ₹79 for
+ * 12/24h. Multi-day durations map to the 24h slab (₹79).
+ */
+export function unlimitedKmPrice(slabHours: number): number {
+  return slabHours <= 7 ? 50 : 79;
+}
+
+/** Unlimited-km fee for an actual duration, based on its billing slab. */
+export function unlimitedKmPriceForDuration(totalHours: number): number {
+  return unlimitedKmPrice(billingSlabHours(totalHours));
+}
+
 /* -------------------------------------------------------------------------- */
 /*  WHY HYPRRIDE                                                               */
 /* -------------------------------------------------------------------------- */

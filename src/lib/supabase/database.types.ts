@@ -91,6 +91,8 @@ export interface Database {
           special_notes: string | null;
           vehicle_interest: string | null;
           preferred_slab_hours: number | null;
+          is_unlimited_km: boolean;
+          unlimited_km_charge: number | null;
           external_booking_id: string | null;
           external_reference: string | null;
           sync_status: SyncStatus;
@@ -109,6 +111,8 @@ export interface Database {
           special_notes?: string | null;
           vehicle_interest?: string | null;
           preferred_slab_hours?: number | null;
+          is_unlimited_km?: boolean;
+          unlimited_km_charge?: number | null;
           external_booking_id?: string | null;
           external_reference?: string | null;
           sync_status?: SyncStatus;

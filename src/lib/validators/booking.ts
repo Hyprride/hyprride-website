@@ -3,7 +3,12 @@ import { z } from "zod";
 import { BOOKING_RULES, PHONE } from "@/lib/constants/booking";
 import { combineDateTime, getDuration, isWeekendRate } from "@/lib/utils/datetime";
 import { normalizeIndianPhone, toE164IndianPhone } from "@/lib/utils/format";
-import { billingSlabHours, estimateForDuration, getBikeBySlug } from "@/lib/data";
+import {
+  billingSlabHours,
+  estimateForDuration,
+  getBikeBySlug,
+  unlimitedKmPriceForDuration,
+} from "@/lib/data";
 
 /**
  * Booking validation contract.
@@ -26,6 +31,8 @@ export type BookingFormValues = {
   vehicleInterest: string;
   /** Optional: chosen duration slab ("1".."24"); empty = custom end time. */
   slabHours: string;
+  /** Optional: "true" when the rider opts into unlimited km. */
+  unlimitedKm: string;
   startDate: string;
   startTime: string;
   endDate: string;
@@ -42,6 +49,7 @@ export const EMPTY_BOOKING_FORM: BookingFormValues = {
   notes: "",
   vehicleInterest: "",
   slabHours: "",
+  unlimitedKm: "",
   startDate: "",
   startTime: "",
   endDate: "",
@@ -99,6 +107,7 @@ export const bookingFieldSchemas = {
     .refine((v) => v === "" || Boolean(getBikeBySlug(v)), "Unknown bike")
     .optional(),
   slabHours: z.string().optional(),
+  unlimitedKm: z.string().optional(),
   startDate: requiredString("Start date"),
   startTime: requiredString("Start time"),
   endDate: requiredString("End date"),
@@ -116,6 +125,8 @@ export type ParsedBooking = {
     specialNotes: string | null;
     vehicleInterest: string | null;
     preferredSlabHours: number | null;
+    isUnlimitedKm: boolean;
+    unlimitedKmCharge: number | null;
     estimatedAmount: number | null;
   };
 };
@@ -193,9 +204,16 @@ export const bookingFormSchema = z
     // The pricing slab the chosen duration bills against (for the booking
     // service, which is slab-based). Estimate is from the actual duration.
     const preferredSlabHours = billingSlabHours(totalHours);
-    const estimatedAmount = vehicleInterest
+    const isUnlimitedKm = values.unlimitedKm === "true";
+    const unlimitedKmCharge = isUnlimitedKm
+      ? unlimitedKmPriceForDuration(totalHours)
+      : null;
+    // Estimate = hourly/slab price + unlimited-km fee (if chosen). GST excluded.
+    const hourly = vehicleInterest
       ? estimateForDuration(vehicleInterest, totalHours, weekend)
       : null;
+    const estimatedAmount =
+      hourly != null ? hourly + (unlimitedKmCharge ?? 0) : null;
 
     return {
       customer: {
@@ -215,6 +233,8 @@ export const bookingFormSchema = z
         specialNotes: notes && notes.length > 0 ? notes : null,
         vehicleInterest,
         preferredSlabHours,
+        isUnlimitedKm,
+        unlimitedKmCharge,
         estimatedAmount,
       },
     };
@@ -222,6 +242,11 @@ export const bookingFormSchema = z
 
 /** Field groups → drives the multi-section progress indicator. */
 export const BOOKING_SECTIONS = [
+  {
+    id: "schedule",
+    title: "Your ride",
+    fields: ["startDate", "startTime", "endDate", "endTime"],
+  },
   {
     id: "personal",
     title: "Personal details",
@@ -231,11 +256,6 @@ export const BOOKING_SECTIONS = [
     id: "emergency",
     title: "Emergency contact",
     fields: ["emergencyName", "emergencyPhone"],
-  },
-  {
-    id: "schedule",
-    title: "Your ride",
-    fields: ["startDate", "startTime", "endDate", "endTime"],
   },
 ] as const satisfies ReadonlyArray<{
   id: string;
