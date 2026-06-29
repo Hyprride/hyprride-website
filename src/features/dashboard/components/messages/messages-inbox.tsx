@@ -15,7 +15,7 @@ import { formatPhoneWithCode, getInitials } from "@/lib/utils/format";
 export type Contact = {
   id: string;
   name: string;
-  email: string;
+  email: string | null;
   phone: string;
   created_at: string;
 };

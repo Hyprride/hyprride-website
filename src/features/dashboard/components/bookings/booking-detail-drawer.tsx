@@ -3,7 +3,9 @@
 import * as React from "react";
 import {
   Activity,
+  Bike,
   Calendar,
+  Link2,
   Mail,
   MapPin,
   Phone,
@@ -26,7 +28,8 @@ import { loadBookingDetail } from "@/features/dashboard/bookings-actions";
 import { useBookingMutations } from "./use-booking-mutations";
 import { BOOKING_STATUSES } from "@/lib/constants/booking";
 import { formatDateTime, formatRelative, getDuration } from "@/lib/utils/datetime";
-import { formatPhoneWithCode } from "@/lib/utils/format";
+import { formatCurrency, formatPhoneWithCode } from "@/lib/utils/format";
+import { getBikeBySlug } from "@/lib/data";
 import type { BookingDetail } from "@/types/booking";
 
 export function BookingDetailDrawer({
@@ -132,6 +135,58 @@ export function BookingDetailDrawer({
                   label="Duration"
                   value={`${duration?.label} · ${duration?.totalHours} hrs`}
                 />
+              </Section>
+
+              {/* Ride interest (from the lead form) */}
+              {(detail.vehicle_interest ||
+                detail.preferred_slab_hours ||
+                detail.estimated_amount != null) && (
+                <Section icon={<Bike className="size-4" />} title="Ride interest">
+                  <Field
+                    label="Bike"
+                    value={
+                      detail.vehicle_interest
+                        ? (() => {
+                            const b = getBikeBySlug(detail.vehicle_interest);
+                            return b ? `${b.name} ${b.model}` : detail.vehicle_interest;
+                          })()
+                        : "—"
+                    }
+                  />
+                  <Field
+                    label="Preferred duration"
+                    value={
+                      detail.preferred_slab_hours
+                        ? `${detail.preferred_slab_hours} hrs`
+                        : "—"
+                    }
+                  />
+                  <Field
+                    label="Estimate"
+                    value={
+                      detail.estimated_amount != null
+                        ? formatCurrency(detail.estimated_amount)
+                        : "—"
+                    }
+                  />
+                </Section>
+              )}
+
+              {/* Booking service integration */}
+              <Section icon={<Link2 className="size-4" />} title="Booking service">
+                <Field
+                  label="Sync status"
+                  value={
+                    detail.sync_status === "pushed"
+                      ? "Pushed"
+                      : detail.sync_status === "failed"
+                        ? "Failed"
+                        : "Not pushed"
+                  }
+                />
+                {detail.external_reference && (
+                  <Field label="Reference" value={detail.external_reference} />
+                )}
               </Section>
 
               {/* Notes */}

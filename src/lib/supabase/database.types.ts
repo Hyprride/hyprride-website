@@ -24,6 +24,9 @@ export type BookingStatus =
   | "Completed"
   | "Cancelled";
 
+/** Whether a lead has been pushed to the in-house booking service. */
+export type SyncStatus = "not_pushed" | "pushed" | "failed";
+
 export interface Database {
   public: {
     Tables: {
@@ -32,7 +35,7 @@ export interface Database {
           id: string;
           name: string;
           phone: string;
-          email: string;
+          email: string | null;
           address: string;
           created_at: string;
           updated_at: string;
@@ -41,7 +44,7 @@ export interface Database {
           id?: string;
           name: string;
           phone: string;
-          email: string;
+          email?: string | null;
           address: string;
           created_at?: string;
           updated_at?: string;
@@ -86,6 +89,11 @@ export interface Database {
           total_hours: number;
           estimated_amount: number | null;
           special_notes: string | null;
+          vehicle_interest: string | null;
+          preferred_slab_hours: number | null;
+          external_booking_id: string | null;
+          external_reference: string | null;
+          sync_status: SyncStatus;
           status: BookingStatus;
           created_at: string;
           updated_at: string;
@@ -99,6 +107,11 @@ export interface Database {
           total_hours: number;
           estimated_amount?: number | null;
           special_notes?: string | null;
+          vehicle_interest?: string | null;
+          preferred_slab_hours?: number | null;
+          external_booking_id?: string | null;
+          external_reference?: string | null;
+          sync_status?: SyncStatus;
           status?: BookingStatus;
           created_at?: string;
           updated_at?: string;
@@ -148,6 +161,7 @@ export interface Database {
     Enums: {
       booking_status: BookingStatus;
     };
+    // Note: sync_status is a TEXT column with a CHECK constraint (not a pg enum).
     CompositeTypes: Record<string, never>;
   };
 }

@@ -1,8 +1,9 @@
 import { z } from "zod";
 
 import { BOOKING_RULES, PHONE } from "@/lib/constants/booking";
-import { combineDateTime, getDuration } from "@/lib/utils/datetime";
-import { normalizeIndianPhone } from "@/lib/utils/format";
+import { combineDateTime, getDuration, isWeekendRate } from "@/lib/utils/datetime";
+import { normalizeIndianPhone, toE164IndianPhone } from "@/lib/utils/format";
+import { billingSlabHours, estimateForDuration, getBikeBySlug } from "@/lib/data";
 
 /**
  * Booking validation contract.
@@ -21,6 +22,10 @@ export type BookingFormValues = {
   emergencyName: string;
   emergencyPhone: string;
   notes: string;
+  /** Optional: bike slug the lead is interested in (from src/lib/data.ts). */
+  vehicleInterest: string;
+  /** Optional: chosen duration slab ("1".."24"); empty = custom end time. */
+  slabHours: string;
   startDate: string;
   startTime: string;
   endDate: string;
@@ -35,6 +40,8 @@ export const EMPTY_BOOKING_FORM: BookingFormValues = {
   emergencyName: "",
   emergencyPhone: "",
   notes: "",
+  vehicleInterest: "",
+  slabHours: "",
   startDate: "",
   startTime: "",
   endDate: "",
@@ -86,6 +93,12 @@ export const bookingFieldSchemas = {
     .trim()
     .max(BOOKING_RULES.limits.notes, "Notes are a little too long")
     .optional(),
+  vehicleInterest: z
+    .string()
+    .trim()
+    .refine((v) => v === "" || Boolean(getBikeBySlug(v)), "Unknown bike")
+    .optional(),
+  slabHours: z.string().optional(),
   startDate: requiredString("Start date"),
   startTime: requiredString("Start time"),
   endDate: requiredString("End date"),
@@ -101,6 +114,9 @@ export type ParsedBooking = {
     endDatetime: string;
     totalHours: number;
     specialNotes: string | null;
+    vehicleInterest: string | null;
+    preferredSlabHours: number | null;
+    estimatedAmount: number | null;
   };
 };
 
@@ -131,13 +147,13 @@ export const bookingFormSchema = z
       return;
     }
 
-    const now = new Date();
-    const minStart = new Date(now.getTime() + BOOKING_RULES.minLeadMinutes * 60000);
-    if (start < minStart) {
+    // Immediate / on-demand bookings are accepted — no minimum lead time —
+    // but the start must not be in the past.
+    if (start < new Date()) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["startTime"],
-        message: `Start time must be at least ${BOOKING_RULES.minLeadMinutes} minutes from now`,
+        message: "Start time can't be in the past",
       });
     }
 
@@ -171,22 +187,35 @@ export const bookingFormSchema = z
     const end = combineDateTime(values.endDate, values.endTime)!;
     const notes = values.notes?.trim();
 
+    const { totalHours } = getDuration(start, end);
+    const weekend = isWeekendRate(start);
+    const vehicleInterest = values.vehicleInterest?.trim() || null;
+    // The pricing slab the chosen duration bills against (for the booking
+    // service, which is slab-based). Estimate is from the actual duration.
+    const preferredSlabHours = billingSlabHours(totalHours);
+    const estimatedAmount = vehicleInterest
+      ? estimateForDuration(vehicleInterest, totalHours, weekend)
+      : null;
+
     return {
       customer: {
         name: values.fullName.trim(),
-        phone: normalizeIndianPhone(values.phone),
+        phone: toE164IndianPhone(values.phone),
         email: values.email.trim().toLowerCase(),
         address: values.address.trim(),
       },
       emergencyContact: {
         contactName: values.emergencyName.trim(),
-        contactPhone: normalizeIndianPhone(values.emergencyPhone),
+        contactPhone: toE164IndianPhone(values.emergencyPhone),
       },
       booking: {
         startDatetime: start.toISOString(),
         endDatetime: end.toISOString(),
-        totalHours: getDuration(start, end).totalHours,
+        totalHours,
         specialNotes: notes && notes.length > 0 ? notes : null,
+        vehicleInterest,
+        preferredSlabHours,
+        estimatedAmount,
       },
     };
   });
@@ -205,7 +234,7 @@ export const BOOKING_SECTIONS = [
   },
   {
     id: "schedule",
-    title: "Booking duration",
+    title: "Your ride",
     fields: ["startDate", "startTime", "endDate", "endTime"],
   },
 ] as const satisfies ReadonlyArray<{

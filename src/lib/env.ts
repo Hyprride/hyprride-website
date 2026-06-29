@@ -41,7 +41,36 @@ export const env = {
       process.env.NEXT_PUBLIC_SITE_URL ?? "https://hyprride.com"
     ).replace(/\/$/, "");
   },
+
+  /* ── In-house booking service (used when pushing a confirmed lead) ──────── */
+  /** Base URL of the booking service REST API, e.g. https://api.example.com */
+  get bookingServiceUrl() {
+    return (process.env.BOOKING_SERVICE_API_URL ?? "").replace(/\/$/, "");
+  },
+  /** Server-to-server token for the booking service API. */
+  get bookingServiceApiKey() {
+    return required(
+      "BOOKING_SERVICE_API_KEY",
+      process.env.BOOKING_SERVICE_API_KEY,
+    );
+  },
+  /** Target shop_id every pushed lead is stamped with (single-shop site). */
+  get bookingServiceShopId() {
+    return required(
+      "BOOKING_SERVICE_SHOP_ID",
+      process.env.BOOKING_SERVICE_SHOP_ID,
+    );
+  },
 } as const;
+
+/** True when the booking-service push is configured. */
+export function hasBookingServiceConfig(): boolean {
+  return Boolean(
+    process.env.BOOKING_SERVICE_API_URL &&
+      process.env.BOOKING_SERVICE_API_KEY &&
+      process.env.BOOKING_SERVICE_SHOP_ID,
+  );
+}
 
 /** True when the public Supabase config is present (used to degrade gracefully). */
 export function hasSupabasePublicConfig(): boolean {

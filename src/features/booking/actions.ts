@@ -52,7 +52,8 @@ export async function createBooking(
   try {
     const supabase = createAdminClient();
 
-    // 2 ─ Upsert the customer (dedupe on email, case-insensitive).
+    // 2 ─ Upsert the customer (dedupe on phone — the booking service's identity
+    //     key; phone is now globally unique here too, in +91 E.164).
     const { data: customerRow, error: customerError } = await supabase
       .from("customers")
       .upsert(
@@ -62,7 +63,7 @@ export async function createBooking(
           email: customer.email,
           address: customer.address,
         },
-        { onConflict: "email" },
+        { onConflict: "phone" },
       )
       .select("id")
       .single();
@@ -101,6 +102,9 @@ export async function createBooking(
         end_datetime: booking.endDatetime,
         total_hours: booking.totalHours,
         special_notes: booking.specialNotes,
+        vehicle_interest: booking.vehicleInterest,
+        preferred_slab_hours: booking.preferredSlabHours,
+        estimated_amount: booking.estimatedAmount,
         status: "New",
       })
       .select("id, reference")

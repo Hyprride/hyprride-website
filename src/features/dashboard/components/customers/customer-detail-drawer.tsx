@@ -88,7 +88,7 @@ export function CustomerDetailDrawer({
               <section className="space-y-2.5">
                 <ContactRow
                   icon={<Mail className="size-4" />}
-                  value={c.email}
+                  value={c.email ?? "—"}
                 />
                 <ContactRow
                   icon={<Phone className="size-4" />}

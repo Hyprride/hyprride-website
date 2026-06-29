@@ -67,14 +67,38 @@ export const BOOKING_STATUS_HEX: Record<BookingStatus, string> = {
 /** Brand accent used across dashboard charts. */
 export const BRAND_HEX = "#E63946";
 
+/**
+ * The booking service's fixed duration slabs (hours). The public form lets a
+ * lead express a *preferred slab*; staff confirm the real slab in-store.
+ */
+export const SLAB_HOURS = [1, 3, 5, 7, 12, 24] as const;
+export type SlabHours = (typeof SLAB_HOURS)[number];
+
+/**
+ * How a website lead status maps onto the booking service's lifecycle. The two
+ * enums mean different things and stay separate — this is documentation of the
+ * bridge, used when a "Confirmed" lead is pushed to the booking service.
+ *
+ *   New        → nothing yet (just submitted)
+ *   Pending    → nothing yet (staff working the lead)
+ *   Confirmed  → push to service → booking 'pending' then 'active' after handover
+ *   Completed  → mirrors service 'completed'
+ *   Cancelled  → no booking, or service 'cancelled'
+ */
+export const LEAD_TO_SERVICE_STATUS: Record<BookingStatus, string> = {
+  New: "none",
+  Pending: "none",
+  Confirmed: "pending",
+  Completed: "completed",
+  Cancelled: "cancelled",
+};
+
 /** Booking duration / scheduling rules (minutes & hours). */
 export const BOOKING_RULES = {
   /** Minimum rental length. */
   minHours: 1,
   /** Maximum rental length (30 days). */
   maxHours: 24 * 30,
-  /** How far ahead of "now" a start time must be, in minutes. */
-  minLeadMinutes: 30,
   /** Field length limits surfaced to the UI as character counters. */
   limits: {
     name: 120,
