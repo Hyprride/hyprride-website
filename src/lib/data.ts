@@ -1,10 +1,7 @@
 import {
-  BadgeCheck,
   ShieldCheck,
   Sparkles,
-  Wallet,
   Headset,
-  Fuel,
   Wrench,
   Timer,
   Eye,
@@ -280,7 +277,7 @@ export function estimateForDuration(
 }
 
 /* -------------------------------------------------------------------------- */
-/*  TRUST                                                                      */
+/*  WHY HYPRRIDE                                                               */
 /* -------------------------------------------------------------------------- */
 
 export type Feature = {
@@ -288,49 +285,6 @@ export type Feature = {
   description: string;
   icon: LucideIcon;
 };
-
-export const trustFeatures: Feature[] = [
-  {
-    title: "Regularly serviced bikes",
-    description:
-      "Every vehicle is fully serviced and inspected every two months for safety and performance.",
-    icon: Wrench,
-  },
-  {
-    title: "Sanitized helmets",
-    description:
-      "Each helmet is sterilised with a UV cleaning machine before it reaches you.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "No hidden charges",
-    description:
-      "Transparent pricing with no last-minute surprises. What you see is what you pay.",
-    icon: Wallet,
-  },
-  {
-    title: "Quick support",
-    description:
-      "Immediate assistance whenever you need it — we're a message away, always.",
-    icon: Headset,
-  },
-  {
-    title: "Ready-to-ride vehicles",
-    description:
-      "Fuel levels and essentials are always taken care of, so you just ride.",
-    icon: Fuel,
-  },
-  {
-    title: "Trusted by riders",
-    description:
-      "Built from real street experience to serve thousands of Hyderabad commutes.",
-    icon: BadgeCheck,
-  },
-];
-
-/* -------------------------------------------------------------------------- */
-/*  WHY HYPRRIDE                                                               */
-/* -------------------------------------------------------------------------- */
 
 export const whyFeatures: Feature[] = [
   {
