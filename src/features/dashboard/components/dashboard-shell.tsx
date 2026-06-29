@@ -9,7 +9,6 @@ import { LogOut, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getInitials } from "@/lib/utils/format";
 import { Logo } from "@/components/shared/icons";
-import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { signOut } from "@/features/auth/actions";
@@ -90,7 +89,6 @@ export function DashboardShell({
             </h1>
           </div>
           <div className="flex items-center gap-2">
-            <ThemeToggle />
             <Avatar className="size-9">
               <AvatarFallback>{getInitials(userEmail)}</AvatarFallback>
             </Avatar>

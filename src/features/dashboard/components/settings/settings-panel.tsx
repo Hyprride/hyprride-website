@@ -1,15 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { useTheme } from "next-themes";
 import {
   Bell,
   Building2,
-  Monitor,
-  Moon,
   Receipt,
   ShieldCheck,
-  Sun,
   UserCircle,
 } from "lucide-react";
 
@@ -26,7 +22,6 @@ const TABS = [
   { id: "pricing", label: "Pricing & tax", icon: Receipt },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "team", label: "Team", icon: ShieldCheck },
-  { id: "appearance", label: "Appearance", icon: Monitor },
   { id: "profile", label: "Profile", icon: UserCircle },
 ] as const;
 
@@ -61,7 +56,6 @@ export function SettingsPanel({ userEmail }: { userEmail: string }) {
         {tab === "pricing" && <PricingTab />}
         {tab === "notifications" && <NotificationsTab />}
         {tab === "team" && <TeamTab userEmail={userEmail} />}
-        {tab === "appearance" && <AppearanceTab />}
         {tab === "profile" && <ProfileTab userEmail={userEmail} />}
       </div>
     </div>
@@ -233,47 +227,6 @@ function TeamTab({ userEmail }: { userEmail: string }) {
         Add admins in the Supabase dashboard (Auth → Users) until invites land
         here.
       </p>
-    </Section>
-  );
-}
-
-function AppearanceTab() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
-
-  const options = [
-    { id: "light", label: "Light", icon: Sun },
-    { id: "dark", label: "Dark", icon: Moon },
-    { id: "system", label: "System", icon: Monitor },
-  ];
-
-  return (
-    <Section
-      title="Appearance"
-      description="Personalize how the dashboard looks on this device."
-    >
-      <div className="grid grid-cols-3 gap-3">
-        {options.map((o) => {
-          const active = mounted && theme === o.id;
-          return (
-            <button
-              key={o.id}
-              type="button"
-              onClick={() => setTheme(o.id)}
-              className={cn(
-                "flex flex-col items-center gap-2 rounded-xl border p-4 transition-colors",
-                active
-                  ? "border-brand bg-brand/5 text-brand"
-                  : "border-border text-muted-foreground hover:bg-muted/40",
-              )}
-            >
-              <o.icon className="size-5" />
-              <span className="text-sm font-medium">{o.label}</span>
-            </button>
-          );
-        })}
-      </div>
     </Section>
   );
 }

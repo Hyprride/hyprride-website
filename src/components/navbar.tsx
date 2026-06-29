@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { contact, navLinks, whatsappLink } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { Logo, WhatsAppIcon } from "@/components/shared/icons";
-import { ThemeToggle } from "@/components/shared/theme-toggle";
 
 export function Navbar() {
   const [scrolled, setScrolled] = React.useState(false);
@@ -56,7 +55,6 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <ThemeToggle />
           <Button
             asChild
             size="sm"
