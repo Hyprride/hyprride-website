@@ -56,6 +56,28 @@ export function todayISODate(): string {
   return format(new Date(), "yyyy-MM-dd");
 }
 
+/** A Date → "YYYY-MM-DD" (local) for a date input value. */
+export function toDateInputValue(d: Date): string {
+  return format(d, "yyyy-MM-dd");
+}
+
+/** A Date → "HH:mm" (local, 24h) for a time field value. */
+export function toTimeInputValue(d: Date): string {
+  return format(d, "HH:mm");
+}
+
+/**
+ * Whether a start time falls in the booking service's weekend window:
+ * Friday 17:00 → Sunday 23:59. Used only for the website's *indicative*
+ * estimate; the booking service computes the authoritative day_type/price.
+ */
+export function isWeekendRate(date: Date): boolean {
+  const day = date.getDay(); // 0 Sun … 6 Sat
+  if (day === 6 || day === 0) return true; // all of Sat/Sun
+  if (day === 5 && date.getHours() >= 17) return true; // Fri from 17:00
+  return false;
+}
+
 /* ── Display formatters (accept Date or ISO string) ─────────────────────── */
 
 function toDate(value: Date | string): Date | null {

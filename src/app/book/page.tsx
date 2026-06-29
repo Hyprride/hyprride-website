@@ -15,8 +15,9 @@ export default function BookPage() {
           Reserve your ride
         </h1>
         <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-          Share a few details and we&apos;ll confirm availability fast. Clean,
-          serviced bikes with a sanitised helmet — {siteConfig.hashtag}
+          Pick your bike and duration for an instant estimate, then share your
+          details — we&apos;ll confirm availability fast. Clean, serviced bikes
+          with a sanitised helmet — {siteConfig.hashtag}
         </p>
       </div>
 

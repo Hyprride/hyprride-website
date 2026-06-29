@@ -30,3 +30,7 @@ next-env.d.ts
 
 # vercel
 .vercel
+
+# supabase (CLI temp/local state)
+/supabase/.temp/
+/supabase/.branches/

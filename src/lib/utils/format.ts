@@ -15,6 +15,19 @@ export function normalizeIndianPhone(input: string): string {
 }
 
 /**
+ * Canonical storage form the booking service expects: "+919876543210"
+ * (regex `^\+91[6-9]\d{9}$`). Use this at the persistence boundary; keep
+ * {@link normalizeIndianPhone} / {@link formatIndianPhone} for display.
+ * Returns "" when the input isn't a complete national number.
+ */
+export function toE164IndianPhone(input: string): string {
+  const digits = normalizeIndianPhone(input);
+  return digits.length === PHONE.nationalLength
+    ? `${PHONE.countryCode}${digits}`
+    : "";
+}
+
+/**
  * Live, human-readable formatting for an Indian mobile number as the user
  * types: "98765 43210". Pure display helper — store the normalized digits.
  */

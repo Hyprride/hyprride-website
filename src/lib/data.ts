@@ -204,6 +204,111 @@ export const fleet: Bike[] = [
   },
 ];
 
+/** Lookup a fleet bike by its slug (the value stored as `vehicle_interest`). */
+export function getBikeBySlug(slug: string): Bike | undefined {
+  return fleet.find((b) => b.slug === slug);
+}
+
+/** Map a slab duration (hours) to the label used in `Bike.pricing`. */
+const SLAB_LABEL: Record<number, string> = {
+  1: "1 Hour",
+  3: "3 Hours",
+  5: "5 Hours",
+  7: "7 Hours",
+  12: "12 Hours",
+  24: "24 Hours",
+};
+
+/**
+ * Indicative rental price for a bike + slab, weekday vs weekend. Returns null
+ * when the bike/slab is unknown. This is the website estimate only — the
+ * booking service computes the authoritative, snapshotted price at booking.
+ */
+export function estimatePrice(
+  slug: string,
+  slabHours: number,
+  weekend: boolean,
+): number | null {
+  const bike = getBikeBySlug(slug);
+  const label = SLAB_LABEL[slabHours];
+  if (!bike || !label) return null;
+  const tier = bike.pricing.find((p) => p.duration === label);
+  if (!tier) return null;
+  return weekend ? tier.weekend : tier.weekday;
+}
+
+const SLABS = [1, 3, 5, 7, 12, 24];
+
+/**
+ * The pricing slab (hours) a given duration bills against — rounded up to the
+ * next slab, capped at the 24h slab. e.g. 4h → 5h slab, 8h → 12h slab.
+ */
+export function billingSlabHours(totalHours: number): number {
+  const capped = Math.min(Math.max(totalHours, 0), 24);
+  return SLABS.find((s) => s >= capped) ?? 24;
+}
+
+/**
+ * Indicative estimate for an ACTUAL rental duration (start → end). Multi-day
+ * rentals bill full 24h days plus the slab covering the remainder. Returns null
+ * when the bike is unknown or the duration is non-positive. Website estimate
+ * only — the booking service computes the authoritative price.
+ */
+export function estimateForDuration(
+  slug: string,
+  totalHours: number,
+  weekend: boolean,
+): number | null {
+  if (!getBikeBySlug(slug) || totalHours <= 0) return null;
+  const fullDays = Math.floor(totalHours / 24);
+  const remHours = totalHours - fullDays * 24;
+  let total = 0;
+  if (fullDays > 0) {
+    const dayPrice = estimatePrice(slug, 24, weekend);
+    if (dayPrice == null) return null;
+    total += fullDays * dayPrice;
+  }
+  if (remHours > 0) {
+    const remPrice = estimatePrice(slug, billingSlabHours(remHours), weekend);
+    if (remPrice == null) return null;
+    total += remPrice;
+  }
+  return total;
+}
+
+/** Included km per slab (bike-independent across the current fleet). */
+const SLAB_KM: Record<number, number> = {
+  1: 15,
+  3: 40,
+  5: 60,
+  7: 80,
+  12: 100,
+  24: 120,
+};
+
+/** Included km for an actual rental duration (full days + remainder slab). */
+export function kmForDuration(totalHours: number): number {
+  if (totalHours <= 0) return 0;
+  const fullDays = Math.floor(totalHours / 24);
+  const remHours = totalHours - fullDays * 24;
+  return (
+    fullDays * SLAB_KM[24] + (remHours > 0 ? SLAB_KM[billingSlabHours(remHours)] : 0)
+  );
+}
+
+/**
+ * One-time fee to unlock unlimited km, by slab: ₹50 for 1/3/5/7h, ₹79 for
+ * 12/24h. Multi-day durations map to the 24h slab (₹79).
+ */
+export function unlimitedKmPrice(slabHours: number): number {
+  return slabHours <= 7 ? 50 : 79;
+}
+
+/** Unlimited-km fee for an actual duration, based on its billing slab. */
+export function unlimitedKmPriceForDuration(totalHours: number): number {
+  return unlimitedKmPrice(billingSlabHours(totalHours));
+}
+
 /* -------------------------------------------------------------------------- */
 /*  WHY HYPRRIDE                                                               */
 /* -------------------------------------------------------------------------- */

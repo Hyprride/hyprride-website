@@ -2,17 +2,55 @@
 
 import * as React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader2, ShieldCheck, Sparkles, Save } from "lucide-react";
+import {
+  Loader2,
+  ShieldCheck,
+  Sparkles,
+  Save,
+  Wallet,
+  FileCheck,
+  Smartphone,
+  Check,
+  Gift,
+} from "lucide-react";
 import { toast } from "sonner";
 
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { BOOKING_RULES } from "@/lib/constants/booking";
-import { todayISODate } from "@/lib/utils/datetime";
-import { formatIndianPhone } from "@/lib/utils/format";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  BOOKING_RULES,
+  EXTRA_KM_CHARGE,
+  GST_RATE_PERCENT,
+  SECURITY_DEPOSIT,
+  SLAB_HOURS,
+} from "@/lib/constants/booking";
+import {
+  combineDateTime,
+  getDuration,
+  isWeekendRate,
+  toDateInputValue,
+  toTimeInputValue,
+  todayISODate,
+} from "@/lib/utils/datetime";
+import { formatCurrency, formatIndianPhone } from "@/lib/utils/format";
+import {
+  estimateForDuration,
+  fleet,
+  kmForDuration,
+  unlimitedKmPriceForDuration,
+} from "@/lib/data";
 import { createBooking } from "../actions";
 import { useBookingForm } from "../hooks/use-booking-form";
 import { useBookingDraft } from "../hooks/use-booking-draft";
 import { FloatingField } from "./floating-field";
+import { TimeField } from "./time-field";
 import { TextareaField } from "./textarea-field";
 import { FormSection } from "./form-section";
 import { ProgressIndicator } from "./progress-indicator";
@@ -74,6 +112,31 @@ export function BookingForm() {
     setSuccess(null);
   };
 
+  // Ride breakdown from the actual selected duration: included km, unlimited-km
+  // fee, hourly price and the total estimate (GST shown separately, not added).
+  // Declared before the early return below so hook order stays stable.
+  const ride = React.useMemo(() => {
+    const start = combineDateTime(values.startDate, values.startTime);
+    const end = combineDateTime(values.endDate, values.endTime);
+    if (!start || !end || end <= start) return null;
+    const { totalHours } = getDuration(start, end);
+    const unlimited = values.unlimitedKm === "true";
+    const km = kmForDuration(totalHours);
+    const unlimitedFee = unlimitedKmPriceForDuration(totalHours);
+    const hourly = values.vehicleInterest
+      ? estimateForDuration(values.vehicleInterest, totalHours, isWeekendRate(start))
+      : null;
+    const total = hourly != null ? hourly + (unlimited ? unlimitedFee : 0) : null;
+    return { km, unlimited, unlimitedFee, hourly, total };
+  }, [
+    values.vehicleInterest,
+    values.unlimitedKm,
+    values.startDate,
+    values.startTime,
+    values.endDate,
+    values.endTime,
+  ]);
+
   if (success) {
     return <SuccessScreen reference={success} onBookAnother={handleBookAnother} />;
   }
@@ -81,15 +144,277 @@ export function BookingForm() {
   const startMin = todayISODate();
   const endMin = values.startDate || startMin;
 
+  const slabSelected = Boolean(values.slabHours);
+
+  // Given a start + slab (hours), the resulting end date/time fields.
+  const endFromSlab = (startDate: string, startTime: string, slab: string) => {
+    const start = combineDateTime(startDate, startTime);
+    if (!start || !slab) return {};
+    const end = new Date(start.getTime() + Number(slab) * 3_600_000);
+    return { endDate: toDateInputValue(end), endTime: toTimeInputValue(end) };
+  };
+
+  // Pick a slab: default start to "now" if empty, then set end = start + slab.
+  const handleSlabChange = (v: string) => {
+    if (v === "custom") {
+      setMany({ slabHours: "" });
+      return;
+    }
+    const now = new Date();
+    const startDate = values.startDate || toDateInputValue(now);
+    const startTime = values.startTime || toTimeInputValue(now);
+    setMany({
+      slabHours: v,
+      startDate,
+      startTime,
+      ...endFromSlab(startDate, startTime, v),
+    });
+  };
+
+  // Edit start: keep end in sync when a slab is driving the duration.
+  const updateStart = (patch: { startDate?: string; startTime?: string }) => {
+    if (patch.startDate !== undefined) setField("startDate", patch.startDate);
+    if (patch.startTime !== undefined) setField("startTime", patch.startTime);
+    if (slabSelected) {
+      const startDate = patch.startDate ?? values.startDate;
+      const startTime = patch.startTime ?? values.startTime;
+      setMany(endFromSlab(startDate, startTime, values.slabHours));
+    }
+  };
+
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:items-start">
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
-        {/* 1 — Personal details */}
+        {/* 1 — Your ride & schedule */}
         <FormSection
           step={1}
+          title="Your ride"
+          description="Pick your bike and when you need it — we'll show an instant estimate."
+          complete={form.sections[0].complete}
+        >
+          <div className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="vehicleInterest"
+                  className="text-sm text-muted-foreground"
+                >
+                  Bike (optional)
+                </label>
+                <Select
+                  value={values.vehicleInterest || undefined}
+                  onValueChange={(v) => setField("vehicleInterest", v)}
+                >
+                  <SelectTrigger id="vehicleInterest">
+                    <SelectValue placeholder="Choose a bike (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {fleet.map((b) => (
+                      <SelectItem key={b.slug} value={b.slug}>
+                        {b.name} {b.model} · {b.engine}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="slabHours"
+                  className="text-sm text-muted-foreground"
+                >
+                  Duration
+                </label>
+                <Select
+                  value={values.slabHours || "custom"}
+                  onValueChange={handleSlabChange}
+                >
+                  <SelectTrigger id="slabHours">
+                    <SelectValue placeholder="Choose duration" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="custom">Custom (set end manually)</SelectItem>
+                    {SLAB_HOURS.map((h) => (
+                      <SelectItem key={h} value={String(h)}>
+                        {h} {h === 1 ? "Hour" : "Hours"}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FloatingField
+                id="startDate"
+                label="Start date"
+                type="date"
+                min={startMin}
+                value={values.startDate}
+                onValueChange={(v) => updateStart({ startDate: v })}
+                onBlur={() => blur("startDate")}
+                error={visibleError("startDate")}
+              />
+              <TimeField
+                id="startTime"
+                label="Start time"
+                value={values.startTime}
+                onValueChange={(v) => updateStart({ startTime: v })}
+                onBlur={() => blur("startTime")}
+                error={visibleError("startTime")}
+              />
+              <FloatingField
+                id="endDate"
+                label="End date"
+                type="date"
+                min={endMin}
+                value={values.endDate}
+                onValueChange={(v) => setField("endDate", v)}
+                onBlur={() => blur("endDate")}
+                error={visibleError("endDate")}
+                disabled={slabSelected}
+              />
+              <TimeField
+                id="endTime"
+                label="End time"
+                value={values.endTime}
+                onValueChange={(v) => setField("endTime", v)}
+                onBlur={() => blur("endTime")}
+                error={visibleError("endTime")}
+                disabled={slabSelected}
+              />
+            </div>
+
+            {slabSelected && (
+              <p className="-mt-1 px-1 text-xs text-muted-foreground">
+                End time is set automatically from your {values.slabHours}-hour
+                duration. Adjust the start time and it follows.
+              </p>
+            )}
+
+            <DurationSummary values={values} />
+
+            {/* Included km + unlimited-km unlock (shown once a duration is set) */}
+            {ride && (
+              <button
+                type="button"
+                onClick={() =>
+                  setField("unlimitedKm", ride.unlimited ? "" : "true")
+                }
+                className="flex w-full items-center justify-between gap-3 rounded-2xl border border-border bg-card/60 p-4 text-left transition-colors hover:border-foreground/20"
+              >
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    {ride.unlimited ? "Unlimited kilometres" : "Unlock unlimited km"}
+                  </p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {ride.unlimited
+                      ? "No distance cap on this ride"
+                      : `Included: ${ride.km} km · ${formatCurrency(EXTRA_KM_CHARGE)}/km beyond · go unlimited for +${formatCurrency(ride.unlimitedFee)}`}
+                  </p>
+                </div>
+                <span
+                  className={cn(
+                    "relative h-6 w-11 shrink-0 rounded-full transition-colors",
+                    ride.unlimited ? "bg-brand" : "bg-muted",
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "absolute top-0.5 size-5 rounded-full bg-white shadow transition-transform",
+                      ride.unlimited ? "translate-x-[1.375rem]" : "translate-x-0.5",
+                    )}
+                  />
+                </span>
+              </button>
+            )}
+
+            {ride?.total != null && (
+              <div className="rounded-2xl border border-brand/20 bg-brand/5 p-4">
+                <p className="text-xs text-muted-foreground">Estimated rental</p>
+                <p className="text-2xl font-bold tracking-tight text-foreground">
+                  {formatCurrency(ride.total)}{" "}
+                  <span className="text-sm font-medium text-muted-foreground">
+                    (+{GST_RATE_PERCENT}% GST)
+                  </span>
+                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  {formatCurrency(ride.hourly!)} rental
+                  {ride.unlimited
+                    ? ` + ${formatCurrency(ride.unlimitedFee)} unlimited km`
+                    : ` · ${ride.km} km included · ${formatCurrency(EXTRA_KM_CHARGE)}/km beyond`}{" "}
+                  · indicative, confirmed at pickup
+                </p>
+              </div>
+            )}
+          </div>
+        </FormSection>
+
+        {/* 2 — Documents & deposit (info only) */}
+        <FormSection
+          step={2}
+          title="Documents & deposit"
+          description="What to keep ready for a smooth, quick pickup."
+        >
+          <div className="space-y-4">
+            {/* Security deposit */}
+            <div className="rounded-2xl border border-border bg-card/60 p-4">
+              <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                <Wallet className="size-4 text-brand" />
+                Refundable security deposit
+              </div>
+              <dl className="mt-3 space-y-2 text-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-muted-foreground">Within Hyderabad limits</dt>
+                  <dd className="font-semibold text-foreground">
+                    {formatCurrency(SECURITY_DEPOSIT.withinHyd)}
+                  </dd>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-muted-foreground">Outside Hyderabad</dt>
+                  <dd className="font-semibold text-foreground">
+                    {formatCurrency(SECURITY_DEPOSIT.outsideHyd)}
+                  </dd>
+                </div>
+              </dl>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Fully refunded after the bike is returned in good condition.
+              </p>
+            </div>
+
+            {/* Documents required */}
+            <div className="rounded-2xl border border-border bg-card/60 p-4">
+              <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                <FileCheck className="size-4 text-brand" />
+                Documents to carry
+              </div>
+              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <Check className="mt-0.5 size-4 shrink-0 text-brand" />
+                  Valid Driving Licence
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="mt-0.5 size-4 shrink-0 text-brand" />
+                  Aadhaar card (masked — only the last 4 digits visible)
+                </li>
+              </ul>
+              <p className="mt-3 flex items-start gap-1.5 rounded-xl bg-muted/50 p-3 text-xs text-muted-foreground">
+                <Smartphone className="mt-0.5 size-3.5 shrink-0 text-brand" />
+                <span>
+                  Physical copies or government-verified apps — DigiLocker,
+                  mAadhaar or m-wallet — are all accepted.
+                </span>
+              </p>
+            </div>
+          </div>
+        </FormSection>
+
+        {/* 3 — Personal details */}
+        <FormSection
+          step={3}
           title="Personal details"
           description="Tell us who's riding."
-          complete={form.sections[0].complete}
+          complete={form.sections[1].complete}
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <FloatingField
@@ -144,12 +469,12 @@ export function BookingForm() {
           </div>
         </FormSection>
 
-        {/* 2 — Emergency contact */}
+        {/* 4 — Emergency contact */}
         <FormSection
-          step={2}
+          step={4}
           title="Emergency contact"
           description="Someone we can reach in case of an emergency."
-          complete={form.sections[1].complete}
+          complete={form.sections[2].complete}
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <FloatingField
@@ -178,9 +503,9 @@ export function BookingForm() {
           </div>
         </FormSection>
 
-        {/* 3 — Additional notes */}
+        {/* 5 — Additional notes */}
         <FormSection
-          step={3}
+          step={5}
           title="Additional notes"
           description="Optional — anything that helps us prepare your ride."
         >
@@ -195,56 +520,6 @@ export function BookingForm() {
             maxLength={BOOKING_RULES.limits.notes}
             rows={4}
           />
-        </FormSection>
-
-        {/* 4 — Booking duration */}
-        <FormSection
-          step={4}
-          title="Booking duration"
-          description="When do you need the bike?"
-          complete={form.sections[2].complete}
-        >
-          <div className="grid gap-4 sm:grid-cols-2">
-            <FloatingField
-              id="startDate"
-              label="Start date"
-              type="date"
-              min={startMin}
-              value={values.startDate}
-              onValueChange={(v) => setField("startDate", v)}
-              onBlur={() => blur("startDate")}
-              error={visibleError("startDate")}
-            />
-            <FloatingField
-              id="startTime"
-              label="Start time"
-              type="time"
-              value={values.startTime}
-              onValueChange={(v) => setField("startTime", v)}
-              onBlur={() => blur("startTime")}
-              error={visibleError("startTime")}
-            />
-            <FloatingField
-              id="endDate"
-              label="End date"
-              type="date"
-              min={endMin}
-              value={values.endDate}
-              onValueChange={(v) => setField("endDate", v)}
-              onBlur={() => blur("endDate")}
-              error={visibleError("endDate")}
-            />
-            <FloatingField
-              id="endTime"
-              label="End time"
-              type="time"
-              value={values.endTime}
-              onValueChange={(v) => setField("endTime", v)}
-              onBlur={() => blur("endTime")}
-              error={visibleError("endTime")}
-            />
-          </div>
-          <DurationSummary values={values} />
         </FormSection>
 
         {/* Submit */}
@@ -293,19 +568,25 @@ export function BookingForm() {
         </AnimatePresence>
 
         <div className="rounded-2xl border border-border bg-card/60 p-4 text-sm">
-          <p className="font-medium text-foreground">Why riders choose us</p>
+          <p className="flex items-center gap-1.5 font-medium text-foreground">
+            <Gift className="size-4 text-brand" />
+            Complimentary with every ride
+          </p>
           <ul className="mt-3 space-y-2 text-muted-foreground">
             {[
-              "Sanitised helmet included",
-              "Transparent, no-surprise pricing",
-              "Serviced, ready-to-ride bikes",
+              "Freshly sanitised helmet",
+              "Hygiene kit — face mask, hair cap & wet wipes",
+              "Rain coat for sudden showers",
             ].map((item) => (
-              <li key={item} className="flex items-center gap-2">
-                <ShieldCheck className="size-4 shrink-0 text-brand" />
+              <li key={item} className="flex items-start gap-2">
+                <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand" />
                 {item}
               </li>
             ))}
           </ul>
+          <p className="mt-3 text-xs text-muted-foreground">
+            All on us — no add-on charges.
+          </p>
         </div>
       </aside>
     </div>

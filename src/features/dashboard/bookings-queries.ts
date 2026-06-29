@@ -74,7 +74,7 @@ function rangeStart(range: BookingsRange): string | null {
 }
 
 const SELECT =
-  "id, reference, customer_id, start_datetime, end_datetime, total_hours, estimated_amount, special_notes, status, created_at, updated_at, customer:customers(*)";
+  "id, reference, customer_id, start_datetime, end_datetime, total_hours, estimated_amount, special_notes, vehicle_interest, preferred_slab_hours, is_unlimited_km, unlimited_km_charge, external_booking_id, external_reference, sync_status, status, created_at, updated_at, customer:customers(*)";
 
 export async function getBookings(
   params: BookingsQueryParams,

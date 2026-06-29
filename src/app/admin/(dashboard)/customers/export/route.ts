@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/features/auth/queries";
 import { getCustomersForExport } from "@/features/dashboard/customers-queries";
 
 /** Escapes a value for CSV (quotes wrap + double-quote escaping). */
-function csvCell(value: string | number): string {
+function csvCell(value: string | number | null | undefined): string {
   const s = String(value ?? "");
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
