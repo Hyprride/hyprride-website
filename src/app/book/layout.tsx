@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 import { Logo } from "@/components/shared/icons";
-import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/lib/site";
 
@@ -31,7 +30,6 @@ export default function BookLayout({
               <ArrowLeft className="size-4" />
               Back to site
             </Link>
-            <ThemeToggle />
           </div>
         </div>
       </header>
