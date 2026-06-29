@@ -32,7 +32,8 @@ export type Bike = {
   fuel: string;
   tagline: string;
   highlight: string;
-  accent: string; // tailwind gradient classes for the visual
+  accent: string; // tailwind gradient classes for the visual fallback
+  image?: string; // product photo in /public/fleet; falls back to BikeVisual
   specs: { label: string; value: string }[];
   pricing: PriceTier[];
   fromWeekday: number;
@@ -52,6 +53,7 @@ export const fleet: Bike[] = [
     tagline: "The effortless city commuter.",
     highlight: "Best value for daily Hyderabad commutes.",
     accent: scooterAccent,
+    image: "/fleet/tvs-jupiter-110.jpg",
     specs: [
       { label: "Engine", value: "110cc" },
       { label: "Fuel", value: "Petrol" },
@@ -78,6 +80,7 @@ export const fleet: Bike[] = [
     tagline: "Comfort-first 125cc commuter.",
     highlight: "Roomy, refined and easy for everyday city rides.",
     accent: scooterAccent,
+    image: "/fleet/tvs-jupiter-125.jpg",
     specs: [
       { label: "Engine", value: "125cc" },
       { label: "Fuel", value: "Petrol" },
@@ -104,6 +107,7 @@ export const fleet: Bike[] = [
     tagline: "Smart, sporty and connected.",
     highlight: "Bluetooth console with a punchy 125cc motor.",
     accent: scooterAccent,
+    image: "/fleet/tvs-ntorq-125.jpg",
     specs: [
       { label: "Engine", value: "125cc" },
       { label: "Fuel", value: "Petrol" },
@@ -130,6 +134,7 @@ export const fleet: Bike[] = [
     tagline: "The Gen-Z street machine.",
     highlight: "Light, agile and fun for weaving the city.",
     accent: sportAccent,
+    image: "/fleet/tvs-raider-125.jpg",
     specs: [
       { label: "Engine", value: "125cc" },
       { label: "Fuel", value: "Petrol" },
@@ -156,6 +161,7 @@ export const fleet: Bike[] = [
     tagline: "Lightweight street style.",
     highlight: "Featherlight and fuel-efficient for the daily grind.",
     accent: scooterAccent,
+    image: "/fleet/yamaha-rayzr-125.jpg",
     specs: [
       { label: "Engine", value: "125cc" },
       { label: "Fuel", value: "Petrol" },
@@ -182,6 +188,7 @@ export const fleet: Bike[] = [
     tagline: "Race-bred performance.",
     highlight: "The most powerful ride in the HYPRRIDE fleet.",
     accent: sportAccent,
+    image: "/fleet/tvs-apache-rtr-160.jpg",
     specs: [
       { label: "Engine", value: "160cc" },
       { label: "Fuel", value: "Petrol" },

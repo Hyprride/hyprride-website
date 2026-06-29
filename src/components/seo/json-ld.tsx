@@ -63,7 +63,8 @@ export function JsonLd() {
         name: `${bike.name} ${bike.model}`,
         category: bike.category,
         description: `${bike.tagline} ${bike.highlight}`,
-        brand: { "@type": "Brand", name: "TVS" },
+        brand: { "@type": "Brand", name: bike.name.split(" ")[0] },
+        ...(bike.image ? { image: `${siteConfig.url}${bike.image}` } : {}),
         offers: {
           "@type": "Offer",
           priceCurrency: "INR",
