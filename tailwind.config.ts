@@ -23,17 +23,17 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         brand: {
-          DEFAULT: "#E63946",
-          50: "#FDECEE",
-          100: "#FBD5D9",
-          200: "#F5A6AE",
-          300: "#EF7884",
-          400: "#EA5560",
-          500: "#E63946",
-          600: "#C81E2B",
-          700: "#971620",
-          800: "#660F16",
-          900: "#36080B",
+          DEFAULT: "#C9A227",
+          50: "#FBF6E4",
+          100: "#F6EAC0",
+          200: "#ECD389",
+          300: "#E0BC52",
+          400: "#D2A832",
+          500: "#C9A227",
+          600: "#A6831E",
+          700: "#82661B",
+          800: "#5E4A18",
+          900: "#433513",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -59,9 +59,9 @@ const config: Config = {
         soft: "0 1px 2px -1px rgba(0,0,0,0.06), 0 10px 30px -14px rgba(0,0,0,0.18)",
         elevated:
           "0 2px 4px -2px rgba(0,0,0,0.08), 0 24px 56px -20px rgba(0,0,0,0.30)",
-        glow: "0 0 0 1px rgba(230,57,70,0.12), 0 20px 60px -20px rgba(230,57,70,0.45)",
+        glow: "0 0 0 1px rgba(201,162,39,0.16), 0 20px 60px -20px rgba(201,162,39,0.45)",
         "glow-sm":
-          "0 0 0 1px rgba(230,57,70,0.14), 0 10px 28px -12px rgba(230,57,70,0.40)",
+          "0 0 0 1px rgba(201,162,39,0.18), 0 10px 28px -12px rgba(201,162,39,0.40)",
       },
       keyframes: {
         "accordion-down": {

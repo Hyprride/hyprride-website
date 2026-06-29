@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-gradient-to-b from-brand-400 to-brand-600 text-white ring-1 ring-inset ring-white/10 shadow-[0_8px_24px_-8px_rgba(230,57,70,0.55)] hover:from-brand-500 hover:to-brand-700 hover:shadow-[0_14px_36px_-10px_rgba(230,57,70,0.7)] hover:-translate-y-0.5",
+          "bg-gradient-to-b from-brand-300 to-brand-500 text-[#2a2208] ring-1 ring-inset ring-black/10 shadow-[0_8px_24px_-8px_rgba(201,162,39,0.55)] hover:from-brand-400 hover:to-brand-600 hover:shadow-[0_14px_36px_-10px_rgba(201,162,39,0.7)] hover:-translate-y-0.5",
         secondary:
           "bg-foreground text-background hover:opacity-90 hover:-translate-y-0.5",
         outline:

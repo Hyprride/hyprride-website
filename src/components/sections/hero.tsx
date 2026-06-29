@@ -12,6 +12,14 @@ import { googleRating } from "@/lib/data";
 
 const easing = [0.21, 0.47, 0.32, 0.98] as const;
 
+/** Hero background rotates through the fleet, looping. */
+const HERO_IMAGES = [
+  { src: "/hero-jupiter.jpg", alt: "TVS Jupiter scooter ready to ride with HYPRRIDE" },
+  { src: "/hero-ntorq.jpg", alt: "TVS Ntorq scooter ready to ride with HYPRRIDE" },
+  { src: "/hero-apache.jpg", alt: "TVS Apache RTR ready to ride with HYPRRIDE" },
+];
+const ROTATE_MS = 5000;
+
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
   show: (i: number) => ({
@@ -29,50 +37,51 @@ export function Hero() {
   });
 
   const yContent = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const yGlow = useTransform(scrollYProgress, [0, 1], [0, 220]);
   const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
+  // Cycle the background image on a loop.
+  const [active, setActive] = React.useState(0);
+  React.useEffect(() => {
+    const id = window.setInterval(
+      () => setActive((i) => (i + 1) % HERO_IMAGES.length),
+      ROTATE_MS,
+    );
+    return () => window.clearInterval(id);
+  }, []);
 
   return (
     <section
       id="home"
       ref={ref}
-      className="relative flex min-h-[100svh] items-center overflow-hidden bg-[#070708] text-white"
+      className="relative flex min-h-[100svh] items-center overflow-hidden bg-background text-foreground"
     >
-      {/* Background — TVS Apache RTR 160 photo with cinematic dark scrims */}
+      {/* Background — rotating fleet photos on a gold backdrop (no overlays) */}
       <div className="pointer-events-none absolute inset-0">
-        <motion.div
-          initial={{ opacity: 0, scale: 1.06 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.6, ease: easing }}
-          className="absolute inset-0"
-        >
-          <Image
-            src="/hero-bike.jpg"
-            alt="Premium motorcycle ready to ride with HYPRRIDE"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
-        </motion.div>
-
-        {/* Left→right scrim keeps the headline readable over the bike */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#070708] via-[#070708]/80 to-[#070708]/10" />
-        {/* Top + bottom fade to blend into the page */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#070708] via-transparent to-[#070708]/60" />
-
-        {/* Brand glow accent */}
-        <motion.div
-          style={{ y: yGlow }}
-          className="absolute right-[-6%] top-[8%] h-[44vh] w-[44vh] rounded-full bg-brand/25 blur-[130px]"
-        />
+        {HERO_IMAGES.map((img, i) => (
+          <motion.div
+            key={img.src}
+            initial={false}
+            animate={{ opacity: i === active ? 1 : 0 }}
+            transition={{ duration: 1, ease: easing }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={img.src}
+              alt={img.alt}
+              fill
+              priority={i === 0}
+              sizes="100vw"
+              className="object-cover object-[58%_center]"
+            />
+          </motion.div>
+        ))}
       </div>
 
       <motion.div
         style={{ y: yContent, opacity }}
         className="relative z-10 mx-auto w-full max-w-8xl px-5 pb-28 pt-28 sm:px-6 lg:px-8"
       >
-        <div className="max-w-3xl">
+        <div className="max-w-2xl">
           <motion.div
             custom={0}
             variants={fadeUp}
@@ -86,17 +95,17 @@ export function Hero() {
               aria-label={`Rated ${googleRating.rating.toFixed(1)} out of 5 on Google${
                 googleRating.total > 0 ? ` from ${googleRating.total} reviews` : ""
               }`}
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-semibold tracking-[0.04em] text-white/80 backdrop-blur-md transition-colors hover:border-white/30 hover:text-white"
+              className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-card/80 px-3.5 py-1.5 text-xs font-semibold tracking-[0.04em] text-foreground/80 backdrop-blur-md transition-colors hover:border-foreground/30 hover:text-foreground"
             >
               <span className="flex items-center gap-0.5 text-brand">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className="size-3 fill-current" />
                 ))}
               </span>
-              <span className="font-bold text-white">
+              <span className="font-bold text-foreground">
                 {googleRating.rating.toFixed(1)}
               </span>
-              <span className="text-white/55">
+              <span className="text-muted-foreground">
                 on Google
                 {googleRating.total > 0 ? ` · ${googleRating.total} reviews` : ""}
               </span>
@@ -118,7 +127,7 @@ export function Hero() {
               variants={fadeUp}
               initial="hidden"
               animate="show"
-              className="block text-gradient-brand"
+              className="block"
             >
               Ride It.
             </motion.span>
@@ -129,7 +138,7 @@ export function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="show"
-            className="mt-7 max-w-xl text-pretty text-lg leading-relaxed text-white/65 sm:text-xl"
+            className="mt-7 max-w-xl text-pretty text-lg font-medium leading-relaxed text-foreground/80 sm:text-xl"
           >
             Clean bikes. Transparent pricing. Fast support. Built for Hyderabad
             riders — rent by the hour or by the day, no logins, no surprises.
@@ -160,7 +169,7 @@ export function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="show"
-            className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-7"
+            className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-foreground/15 pt-7"
           >
             {[
               { v: "4", l: "TVS models" },
@@ -171,7 +180,7 @@ export function Hero() {
                 <dt className="text-xl font-bold tracking-tight sm:text-2xl">
                   {stat.v}
                 </dt>
-                <dd className="mt-1 text-xs text-white/50 sm:text-sm">
+                <dd className="mt-1 text-xs font-medium text-foreground/65 sm:text-sm">
                   {stat.l}
                 </dd>
               </div>
@@ -188,12 +197,12 @@ export function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.8 }}
-        className="absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 text-white/50 transition-colors hover:text-white md:flex"
+        className="absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 text-foreground/50 transition-colors hover:text-foreground md:flex"
       >
         <span className="text-[11px] font-medium uppercase tracking-[0.2em]">
           Scroll
         </span>
-        <span className="grid h-9 w-6 place-items-start justify-center rounded-full border border-white/20 p-1.5">
+        <span className="grid h-9 w-6 place-items-start justify-center rounded-full border border-foreground/20 p-1.5">
           <motion.span
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}

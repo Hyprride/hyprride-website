@@ -48,7 +48,7 @@ export function SuccessScreen({
           transition={{ duration: 1, ease: "easeOut" }}
         />
         <motion.div
-          className="grid size-16 place-items-center rounded-full bg-brand text-white"
+          className="grid size-16 place-items-center rounded-full bg-brand text-[#2a2208]"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 320, damping: 18, delay: 0.1 }}

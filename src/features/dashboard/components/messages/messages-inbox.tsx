@@ -66,7 +66,7 @@ export function MessagesInbox({ contacts }: { contacts: Contact[] }) {
                 className={cn(
                   "rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
                   channel === c.id
-                    ? "bg-brand text-white"
+                    ? "bg-brand text-[#2a2208]"
                     : "bg-muted text-muted-foreground hover:text-foreground",
                 )}
               >

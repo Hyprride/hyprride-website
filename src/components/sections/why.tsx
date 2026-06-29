@@ -56,7 +56,7 @@ export function Why() {
                 <StaggerItem key={feature.title}>
                   <article className="group h-full rounded-3xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-brand/30 hover:shadow-soft">
                     <div className="flex items-center gap-3">
-                      <span className="grid size-11 place-items-center rounded-2xl bg-brand/10 text-brand transition-colors duration-300 group-hover:bg-brand group-hover:text-white">
+                      <span className="grid size-11 place-items-center rounded-2xl bg-brand/10 text-brand transition-colors duration-300 group-hover:bg-brand group-hover:text-[#2a2208]">
                         <feature.icon className="size-[22px]" />
                       </span>
                       <h3 className="text-base font-semibold tracking-tight">

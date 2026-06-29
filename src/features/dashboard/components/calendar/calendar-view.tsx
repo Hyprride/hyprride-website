@@ -160,7 +160,7 @@ export function CalendarView() {
                 className={cn(
                   "rounded-full px-3 py-1 text-sm font-medium capitalize transition-colors",
                   view === v
-                    ? "bg-brand text-white"
+                    ? "bg-brand text-[#2a2208]"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
@@ -288,7 +288,7 @@ function MonthGrid({
                 className={cn(
                   "inline-grid size-6 place-items-center rounded-full text-xs",
                   isToday(day)
-                    ? "bg-brand font-semibold text-white"
+                    ? "bg-brand font-semibold text-[#2a2208]"
                     : muted
                       ? "text-muted-foreground/50"
                       : "text-foreground",
@@ -348,7 +348,7 @@ function WeekGrid({
                 className={cn(
                   "grid size-6 place-items-center rounded-full text-xs",
                   isToday(day)
-                    ? "bg-brand font-semibold text-white"
+                    ? "bg-brand font-semibold text-[#2a2208]"
                     : "text-foreground",
                 )}
               >
