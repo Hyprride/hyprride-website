@@ -28,7 +28,7 @@ export function FormSection({
           className={cn(
             "grid size-9 shrink-0 place-items-center rounded-full text-sm font-semibold transition-colors duration-300",
             complete
-              ? "bg-brand text-white"
+              ? "bg-brand text-[#2a2208]"
               : "bg-muted text-muted-foreground",
           )}
         >

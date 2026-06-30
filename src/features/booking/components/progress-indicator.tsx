@@ -43,7 +43,7 @@ export function ProgressIndicator({
               className={cn(
                 "grid size-5 shrink-0 place-items-center rounded-full text-[10px] font-bold transition-colors duration-300",
                 section.complete
-                  ? "bg-brand text-white"
+                  ? "bg-brand text-[#2a2208]"
                   : section.hasError
                     ? "bg-red-500/15 text-red-500"
                     : "bg-muted text-muted-foreground",

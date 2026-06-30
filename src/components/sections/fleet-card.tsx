@@ -96,7 +96,7 @@ export function FleetCard({ bike }: { bike: Bike }) {
               className={cn(
                 "relative rounded-full px-4 py-1.5 font-medium capitalize transition-colors",
                 plan === p
-                  ? "text-white"
+                  ? "text-[#2a2208]"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
