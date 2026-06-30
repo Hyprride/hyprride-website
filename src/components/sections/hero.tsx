@@ -49,147 +49,163 @@ export function Hero() {
     return () => window.clearInterval(id);
   }, []);
 
+  // Crossfading slide stack (reused full-bleed on desktop, as a band on mobile).
+  const slides = (imgClassName: string) =>
+    HERO_IMAGES.map((img, i) => (
+      <motion.div
+        key={img.src}
+        initial={false}
+        animate={{ opacity: i === active ? 1 : 0 }}
+        transition={{ duration: 1, ease: easing }}
+        className="absolute inset-0"
+      >
+        <Image
+          src={img.src}
+          alt={img.alt}
+          fill
+          priority={i === 0}
+          sizes="100vw"
+          className={imgClassName}
+        />
+      </motion.div>
+    ));
+
   return (
     <section
       id="home"
       ref={ref}
-      className="relative flex min-h-[100svh] items-center overflow-hidden bg-background text-foreground"
+      className="relative flex min-h-[100svh] flex-col overflow-hidden text-foreground sm:block"
     >
-      {/* Background — rotating fleet photos on a gold backdrop (no overlays) */}
-      <div className="pointer-events-none absolute inset-0">
-        {HERO_IMAGES.map((img, i) => (
-          <motion.div
-            key={img.src}
-            initial={false}
-            animate={{ opacity: i === active ? 1 : 0 }}
-            transition={{ duration: 1, ease: easing }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={img.src}
-              alt={img.alt}
-              fill
-              priority={i === 0}
-              sizes="100vw"
-              className="object-cover object-[58%_center]"
-            />
-          </motion.div>
-        ))}
+      {/* Gold backdrop — sits behind the text on mobile; covered by photos on desktop */}
+      <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_60%_35%,#d6bb8c_0%,#bd9c66_55%,#9c8050_100%)]" />
+
+      {/* Desktop: full-bleed rotating fleet photos */}
+      <div className="pointer-events-none absolute inset-0 hidden sm:block">
+        {slides("object-cover object-[58%_center]")}
       </div>
 
-      <motion.div
-        style={{ y: yContent, opacity }}
-        className="relative z-10 mx-auto w-full max-w-8xl px-5 pb-28 pt-28 sm:px-6 lg:px-8"
-      >
-        <div className="max-w-2xl">
-          <motion.div
-            custom={0}
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-          >
-            <a
-              href={googleRating.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Rated ${googleRating.rating.toFixed(1)} out of 5 on Google${
-                googleRating.total > 0 ? ` from ${googleRating.total} reviews` : ""
-              }`}
-              className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-card/80 px-3.5 py-1.5 text-xs font-semibold tracking-[0.04em] text-foreground/80 backdrop-blur-md transition-colors hover:border-foreground/30 hover:text-foreground"
-            >
-              <span className="flex items-center gap-0.5 text-brand">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="size-3 fill-current" />
-                ))}
-              </span>
-              <span className="font-bold text-foreground">
-                {googleRating.rating.toFixed(1)}
-              </span>
-              <span className="text-muted-foreground">
-                on Google
-                {googleRating.total > 0 ? ` · ${googleRating.total} reviews` : ""}
-              </span>
-            </a>
-          </motion.div>
-
-          <h1 className="mt-6 font-display text-[15vw] font-extrabold leading-[0.92] tracking-tight sm:text-7xl md:text-8xl lg:text-[7.5rem]">
-            <motion.span
-              custom={1}
+      {/* Content: stacked on mobile (text over gold, photo band below),
+          centered overlay on desktop */}
+      <div className="relative z-10 flex flex-1 flex-col sm:block">
+        <motion.div
+          style={{ y: yContent, opacity }}
+          className="mx-auto flex w-full max-w-8xl flex-1 flex-col justify-start px-5 pb-8 pt-24 sm:min-h-[100svh] sm:justify-center sm:pb-28 sm:pt-28 lg:px-8"
+        >
+          <div className="max-w-2xl">
+            <motion.div
+              custom={0}
               variants={fadeUp}
               initial="hidden"
               animate="show"
-              className="block"
             >
-              Rent It.
-            </motion.span>
-            <motion.span
-              custom={2}
+              <a
+                href={googleRating.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Rated ${googleRating.rating.toFixed(1)} out of 5 on Google${
+                  googleRating.total > 0 ? ` from ${googleRating.total} reviews` : ""
+                }`}
+                className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-card/80 px-3.5 py-1.5 text-xs font-semibold tracking-[0.04em] text-foreground/80 backdrop-blur-md transition-colors hover:border-foreground/30 hover:text-foreground"
+              >
+                <span className="flex items-center gap-0.5 text-brand">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="size-3 fill-current" />
+                  ))}
+                </span>
+                <span className="font-bold text-foreground">
+                  {googleRating.rating.toFixed(1)}
+                </span>
+                <span className="text-muted-foreground">
+                  on Google
+                  {googleRating.total > 0 ? ` · ${googleRating.total} reviews` : ""}
+                </span>
+              </a>
+            </motion.div>
+
+            <h1 className="mt-6 font-display text-[13vw] font-extrabold leading-[0.92] tracking-tight sm:text-7xl md:text-8xl lg:text-[7.5rem]">
+              <motion.span
+                custom={1}
+                variants={fadeUp}
+                initial="hidden"
+                animate="show"
+                className="block"
+              >
+                Rent It.
+              </motion.span>
+              <motion.span
+                custom={2}
+                variants={fadeUp}
+                initial="hidden"
+                animate="show"
+                className="block"
+              >
+                Ride It.
+              </motion.span>
+            </h1>
+
+            <motion.p
+              custom={3}
               variants={fadeUp}
               initial="hidden"
               animate="show"
-              className="block"
+              className="mt-6 max-w-xl text-pretty text-base font-medium leading-relaxed text-foreground/80 sm:mt-7 sm:text-xl"
             >
-              Ride It.
-            </motion.span>
-          </h1>
+              Clean bikes. Transparent pricing. Fast support. Built for Hyderabad
+              riders — rent by the hour or by the day, no logins, no surprises.
+            </motion.p>
 
-          <motion.p
-            custom={3}
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            className="mt-7 max-w-xl text-pretty text-lg font-medium leading-relaxed text-foreground/80 sm:text-xl"
-          >
-            Clean bikes. Transparent pricing. Fast support. Built for Hyderabad
-            riders — rent by the hour or by the day, no logins, no surprises.
-          </motion.p>
+            <motion.div
+              custom={4}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:items-center"
+            >
+              <Button asChild size="lg">
+                <Link href="/book" aria-label="Book a bike">
+                  <CalendarCheck className="size-[18px]" />
+                  Book now
+                </Link>
+              </Button>
+              <CtaButtons
+                showCall={false}
+                whatsappVariant="glass"
+                whatsappLabel="WhatsApp Us"
+              />
+            </motion.div>
 
-          <motion.div
-            custom={4}
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
-          >
-            <Button asChild size="lg">
-              <Link href="/book" aria-label="Book a bike">
-                <CalendarCheck className="size-[18px]" />
-                Book now
-              </Link>
-            </Button>
-            <CtaButtons
-              showCall={false}
-              whatsappVariant="glass"
-              whatsappLabel="WhatsApp Us"
-            />
-          </motion.div>
+            <motion.dl
+              custom={5}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              className="mt-9 hidden max-w-lg grid-cols-3 gap-6 border-t border-foreground/15 pt-7 sm:mt-12 sm:grid"
+            >
+              {[
+                { v: "4", l: "TVS models" },
+                { v: "7AM–12AM", l: "Open daily" },
+                { v: "₹79", l: "From / hour" },
+              ].map((stat) => (
+                <div key={stat.l}>
+                  <dt className="text-xl font-bold tracking-tight sm:text-2xl">
+                    {stat.v}
+                  </dt>
+                  <dd className="mt-1 text-xs font-medium text-foreground/65 sm:text-sm">
+                    {stat.l}
+                  </dd>
+                </div>
+              ))}
+            </motion.dl>
+          </div>
+        </motion.div>
 
-          <motion.dl
-            custom={5}
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-foreground/15 pt-7"
-          >
-            {[
-              { v: "4", l: "TVS models" },
-              { v: "7AM–12AM", l: "Open daily" },
-              { v: "₹79", l: "From / hour" },
-            ].map((stat) => (
-              <div key={stat.l}>
-                <dt className="text-xl font-bold tracking-tight sm:text-2xl">
-                  {stat.v}
-                </dt>
-                <dd className="mt-1 text-xs font-medium text-foreground/65 sm:text-sm">
-                  {stat.l}
-                </dd>
-              </div>
-            ))}
-          </motion.dl>
+        {/* Mobile: rotating photo band beneath the text */}
+        <div className="relative h-[42vh] w-full shrink-0 sm:hidden">
+          {slides("object-cover object-[58%_center]")}
         </div>
-      </motion.div>
+      </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator (desktop only) */}
       <motion.a
         href="#fleet"
         aria-label="Scroll to fleet"
