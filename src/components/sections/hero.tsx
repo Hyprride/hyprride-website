@@ -150,8 +150,8 @@ export function Hero() {
               animate="show"
               className="mt-6 max-w-xl text-pretty text-base font-medium leading-relaxed text-foreground/80 sm:mt-7 sm:text-xl"
             >
-              Clean bikes. Transparent pricing. Fast support. Built for Hyderabad
-              riders — rent by the hour or by the day, no logins, no surprises.
+              Clean bikes, fair prices, instant booking, and a ride you can
+              trust.
             </motion.p>
 
             <motion.div
@@ -179,10 +179,9 @@ export function Hero() {
               variants={fadeUp}
               initial="hidden"
               animate="show"
-              className="mt-9 hidden max-w-lg grid-cols-3 gap-6 border-t border-foreground/15 pt-7 sm:mt-12 sm:grid"
+              className="mt-9 hidden max-w-lg grid-cols-2 gap-6 border-t border-foreground/15 pt-7 sm:mt-12 sm:grid"
             >
               {[
-                { v: "4", l: "TVS models" },
                 { v: "7AM–12AM", l: "Open daily" },
                 { v: "₹79", l: "From / hour" },
               ].map((stat) => (

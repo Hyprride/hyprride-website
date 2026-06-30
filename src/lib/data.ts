@@ -435,7 +435,7 @@ export type Testimonial = {
  *   url    → your Google Maps listing (used for the "read reviews" links)
  */
 export const googleRating: { rating: number; total: number; url: string } = {
-  rating: 5.0,
+  rating: 4.8,
   total: 0,
   url: "https://maps.app.goo.gl/JB8WNXKwanKzzUnU9",
 };
