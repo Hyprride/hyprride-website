@@ -66,6 +66,17 @@ export function toTimeInputValue(d: Date): string {
   return format(d, "HH:mm");
 }
 
+/** HYPRRIDE is open 7 AM–12 AM; the store is closed from midnight to 7 AM. */
+export const STORE_OPEN_HOUR = 7;
+
+/**
+ * Whether a time-of-day is within store hours (07:00–23:59). Pickups and
+ * returns are only accepted while the store is open.
+ */
+export function isWithinStoreHours(date: Date): boolean {
+  return date.getHours() >= STORE_OPEN_HOUR;
+}
+
 /**
  * Whether a start time falls in the booking service's weekend window:
  * Friday 17:00 → Sunday 23:59. Used only for the website's *indicative*

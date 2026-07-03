@@ -130,5 +130,48 @@ export const PHONE = {
   nationalLength: 10,
 } as const;
 
+/**
+ * Country dial codes for the phone picker — India first (default) so it's on
+ * top. Each dial code is unique so the value maps cleanly to E.164.
+ */
+export const COUNTRY_CODES: ReadonlyArray<{
+  code: string;
+  flag: string;
+  label: string;
+}> = [
+  { code: "+91", flag: "🇮🇳", label: "India" },
+  { code: "+1", flag: "🇺🇸", label: "United States / Canada" },
+  { code: "+44", flag: "🇬🇧", label: "United Kingdom" },
+  { code: "+971", flag: "🇦🇪", label: "United Arab Emirates" },
+  { code: "+966", flag: "🇸🇦", label: "Saudi Arabia" },
+  { code: "+974", flag: "🇶🇦", label: "Qatar" },
+  { code: "+965", flag: "🇰🇼", label: "Kuwait" },
+  { code: "+968", flag: "🇴🇲", label: "Oman" },
+  { code: "+973", flag: "🇧🇭", label: "Bahrain" },
+  { code: "+65", flag: "🇸🇬", label: "Singapore" },
+  { code: "+60", flag: "🇲🇾", label: "Malaysia" },
+  { code: "+61", flag: "🇦🇺", label: "Australia" },
+  { code: "+64", flag: "🇳🇿", label: "New Zealand" },
+  { code: "+49", flag: "🇩🇪", label: "Germany" },
+  { code: "+33", flag: "🇫🇷", label: "France" },
+  { code: "+39", flag: "🇮🇹", label: "Italy" },
+  { code: "+34", flag: "🇪🇸", label: "Spain" },
+  { code: "+31", flag: "🇳🇱", label: "Netherlands" },
+  { code: "+41", flag: "🇨🇭", label: "Switzerland" },
+  { code: "+353", flag: "🇮🇪", label: "Ireland" },
+  { code: "+81", flag: "🇯🇵", label: "Japan" },
+  { code: "+86", flag: "🇨🇳", label: "China" },
+  { code: "+880", flag: "🇧🇩", label: "Bangladesh" },
+  { code: "+94", flag: "🇱🇰", label: "Sri Lanka" },
+  { code: "+977", flag: "🇳🇵", label: "Nepal" },
+  { code: "+63", flag: "🇵🇭", label: "Philippines" },
+  { code: "+62", flag: "🇮🇩", label: "Indonesia" },
+  { code: "+27", flag: "🇿🇦", label: "South Africa" },
+  { code: "+234", flag: "🇳🇬", label: "Nigeria" },
+];
+
+/** Default dial code for new bookings. */
+export const DEFAULT_DIAL_CODE = "+91";
+
 /** Draft autosave key (localStorage). */
 export const BOOKING_DRAFT_KEY = "hyprride:booking-draft:v1";

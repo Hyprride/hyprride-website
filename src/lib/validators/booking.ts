@@ -1,8 +1,13 @@
 import { z } from "zod";
 
-import { BOOKING_RULES, PHONE } from "@/lib/constants/booking";
-import { combineDateTime, getDuration, isWeekendRate } from "@/lib/utils/datetime";
-import { normalizeIndianPhone, toE164IndianPhone } from "@/lib/utils/format";
+import { BOOKING_RULES, DEFAULT_DIAL_CODE } from "@/lib/constants/booking";
+import {
+  combineDateTime,
+  getDuration,
+  isWeekendRate,
+  isWithinStoreHours,
+} from "@/lib/utils/datetime";
+import { toE164 } from "@/lib/utils/format";
 import {
   billingSlabHours,
   estimateForDuration,
@@ -22,12 +27,21 @@ import {
 export type BookingFormValues = {
   fullName: string;
   phone: string;
+  /** Dial code for {@link phone}, e.g. "+91". */
+  phoneCountry: string;
   email: string;
-  address: string;
+  /** Present address in Hyderabad — flat / room number. */
+  addressFlat: string;
+  /** Building / hostel / hotel / flat name. */
+  addressBuilding: string;
+  /** Street / area. */
+  addressArea: string;
   emergencyName: string;
   emergencyPhone: string;
+  /** Dial code for {@link emergencyPhone}. */
+  emergencyPhoneCountry: string;
   notes: string;
-  /** Optional: bike slug the lead is interested in (from src/lib/data.ts). */
+  /** Required: bike slug the rider wants (from src/lib/data.ts). */
   vehicleInterest: string;
   /** Optional: chosen duration slab ("1".."24"); empty = custom end time. */
   slabHours: string;
@@ -42,10 +56,14 @@ export type BookingFormValues = {
 export const EMPTY_BOOKING_FORM: BookingFormValues = {
   fullName: "",
   phone: "",
+  phoneCountry: DEFAULT_DIAL_CODE,
   email: "",
-  address: "",
+  addressFlat: "",
+  addressBuilding: "",
+  addressArea: "",
   emergencyName: "",
   emergencyPhone: "",
+  emergencyPhoneCountry: DEFAULT_DIAL_CODE,
   notes: "",
   vehicleInterest: "",
   slabHours: "",
@@ -55,17 +73,6 @@ export const EMPTY_BOOKING_FORM: BookingFormValues = {
   endDate: "",
   endTime: "",
 };
-
-const indianMobile = z
-  .string()
-  .trim()
-  .min(1, "Phone number is required")
-  .transform(normalizeIndianPhone)
-  .refine(
-    (d) => d.length === PHONE.nationalLength,
-    `Enter a valid ${PHONE.nationalLength}-digit mobile number`,
-  )
-  .refine((d) => /^[6-9]/.test(d), "Indian mobile numbers start with 6–9");
 
 const requiredString = (label: string) =>
   z.string({ required_error: `${label} is required` }).trim().min(1, `${label} is required`);
@@ -77,7 +84,9 @@ export const bookingFieldSchemas = {
     .trim()
     .min(2, "Please enter your full name")
     .max(BOOKING_RULES.limits.name, "That name is a little too long"),
-  phone: indianMobile,
+  // Phone format depends on the country — checked in the cross-field refine.
+  phone: z.string().trim().min(1, "Phone number is required"),
+  phoneCountry: z.string().min(1),
   email: z
     .string()
     .trim()
@@ -85,17 +94,28 @@ export const bookingFieldSchemas = {
     .min(1, "Email is required")
     .email("Enter a valid email address")
     .max(180, "That email is too long"),
-  address: z
+  addressFlat: z
     .string()
     .trim()
-    .min(4, "Please enter your pickup / delivery address")
-    .max(BOOKING_RULES.limits.address, "That address is too long"),
+    .min(1, "Flat / room number is required")
+    .max(60, "That's a little too long"),
+  addressBuilding: z
+    .string()
+    .trim()
+    .min(2, "Enter the building / hostel / hotel name")
+    .max(120, "That's a little too long"),
+  addressArea: z
+    .string()
+    .trim()
+    .min(2, "Enter the street / area")
+    .max(160, "That's a little too long"),
   emergencyName: z
     .string()
     .trim()
     .min(2, "Enter the contact's name")
     .max(BOOKING_RULES.limits.emergencyName, "That name is a little too long"),
-  emergencyPhone: indianMobile,
+  emergencyPhone: z.string().trim().min(1, "Contact phone is required"),
+  emergencyPhoneCountry: z.string().min(1),
   notes: z
     .string()
     .trim()
@@ -104,8 +124,8 @@ export const bookingFieldSchemas = {
   vehicleInterest: z
     .string()
     .trim()
-    .refine((v) => v === "" || Boolean(getBikeBySlug(v)), "Unknown bike")
-    .optional(),
+    .min(1, "Please choose a bike")
+    .refine((v) => Boolean(getBikeBySlug(v)), "Please choose a bike"),
   slabHours: z.string().optional(),
   unlimitedKm: z.string().optional(),
   startDate: requiredString("Start date"),
@@ -138,6 +158,33 @@ export type ParsedBooking = {
 export const bookingFormSchema = z
   .object(bookingFieldSchemas)
   .superRefine((values, ctx) => {
+    // Phone format depends on the chosen country. India: strict 10-digit
+    // mobile (6-9…); everything else: a lenient 6–15 digit E.164 body.
+    const checkPhone = (
+      raw: string,
+      dial: string,
+      path: "phone" | "emergencyPhone",
+    ) => {
+      const d = raw.replace(/\D/g, "");
+      if (d.length === 0) return; // "required" handled at field level
+      const ok =
+        dial === "+91"
+          ? /^[6-9]\d{9}$/.test(d)
+          : d.length >= 6 && d.length <= 15;
+      if (!ok) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [path],
+          message:
+            dial === "+91"
+              ? "Enter a valid 10-digit mobile number"
+              : "Enter a valid phone number",
+        });
+      }
+    };
+    checkPhone(values.phone, values.phoneCountry, "phone");
+    checkPhone(values.emergencyPhone, values.emergencyPhoneCountry, "emergencyPhone");
+
     const start = combineDateTime(values.startDate, values.startTime);
     const end = combineDateTime(values.endDate, values.endTime);
 
@@ -168,6 +215,15 @@ export const bookingFormSchema = z
       });
     }
 
+    // Store hours: open 7 AM–12 AM. No pickups during the closed window.
+    if (!isWithinStoreHours(start)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["startTime"],
+        message: "Sorry, we're closed 12 AM–7 AM. Pick a time between 7 AM and 12 AM.",
+      });
+    }
+
     if (end <= start) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -175,6 +231,15 @@ export const bookingFormSchema = z
         message: "End time must be after the start time",
       });
       return;
+    }
+
+    // No returns during the closed window — return before 12 AM or after 7 AM.
+    if (!isWithinStoreHours(end)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["endTime"],
+        message: "No returns 12 AM–7 AM — return before 12 AM or after 7 AM.",
+      });
     }
 
     const { totalHours } = getDuration(start, end);
@@ -218,13 +283,16 @@ export const bookingFormSchema = z
     return {
       customer: {
         name: values.fullName.trim(),
-        phone: toE164IndianPhone(values.phone),
+        phone: toE164(values.phoneCountry, values.phone),
         email: values.email.trim().toLowerCase(),
-        address: values.address.trim(),
+        address: [values.addressFlat, values.addressBuilding, values.addressArea]
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .join(", "),
       },
       emergencyContact: {
         contactName: values.emergencyName.trim(),
-        contactPhone: toE164IndianPhone(values.emergencyPhone),
+        contactPhone: toE164(values.emergencyPhoneCountry, values.emergencyPhone),
       },
       booking: {
         startDatetime: start.toISOString(),
@@ -245,12 +313,19 @@ export const BOOKING_SECTIONS = [
   {
     id: "schedule",
     title: "Your ride",
-    fields: ["startDate", "startTime", "endDate", "endTime"],
+    fields: ["vehicleInterest", "startDate", "startTime", "endDate", "endTime"],
   },
   {
     id: "personal",
     title: "Personal details",
-    fields: ["fullName", "phone", "email", "address"],
+    fields: [
+      "fullName",
+      "phone",
+      "email",
+      "addressFlat",
+      "addressBuilding",
+      "addressArea",
+    ],
   },
   {
     id: "emergency",
