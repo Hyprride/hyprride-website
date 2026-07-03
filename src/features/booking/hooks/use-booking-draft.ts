@@ -10,8 +10,12 @@ import {
 
 const DEBOUNCE_MS = 600;
 
+/** Meaningful = the rider actually changed something from the empty defaults
+ *  (ignores prefilled defaults like the "+91" country codes). */
 function isMeaningful(values: BookingFormValues): boolean {
-  return Object.values(values).some((v) => v.trim().length > 0);
+  return (Object.keys(values) as (keyof BookingFormValues)[]).some(
+    (k) => values[k].trim() !== EMPTY_BOOKING_FORM[k].trim(),
+  );
 }
 
 function readDraft(): BookingFormValues | null {

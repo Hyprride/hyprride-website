@@ -1,4 +1,4 @@
-import { PHONE } from "@/lib/constants/booking";
+import { COUNTRY_CODES, PHONE } from "@/lib/constants/booking";
 
 /**
  * Strip everything except digits, dropping a leading 91 country code or 0.
@@ -27,6 +27,20 @@ export function toE164IndianPhone(input: string): string {
     : "";
 }
 
+/** Keep digits only (no spaces/symbols), capped to `max` length. */
+export function digitsOnly(input: string, max = 15): string {
+  return input.replace(/\D/g, "").slice(0, max);
+}
+
+/**
+ * Combine a dial code (e.g. "+91") with a national number into E.164
+ * ("+919876543210"). Returns "" when there are no digits.
+ */
+export function toE164(dialCode: string, national: string): string {
+  const digits = national.replace(/\D/g, "");
+  return digits ? `${dialCode}${digits}` : "";
+}
+
 /**
  * Live, human-readable formatting for an Indian mobile number as the user
  * types: "98765 43210". Pure display helper — store the normalized digits.
@@ -37,10 +51,27 @@ export function formatIndianPhone(input: string): string {
   return `${digits.slice(0, 5)} ${digits.slice(5)}`;
 }
 
-/** Full E.164-ish display form: "+91 98765 43210". */
+/**
+ * Display an E.164 phone as "dial-code national-number" with NO gap between
+ * the digits, e.g. "+91 6464646464". Splits the longest matching country dial
+ * code so non-Indian numbers render correctly too.
+ */
 export function formatPhoneWithCode(input: string): string {
-  const formatted = formatIndianPhone(input);
-  return formatted ? `${PHONE.countryCode} ${formatted}` : "";
+  const trimmed = (input ?? "").trim();
+  if (!trimmed) return "";
+  if (trimmed.startsWith("+")) {
+    const code = COUNTRY_CODES.map((c) => c.code)
+      .sort((a, b) => b.length - a.length)
+      .find((c) => trimmed.startsWith(c));
+    if (code) {
+      const national = trimmed.slice(code.length);
+      return national ? `${code} ${national}` : code;
+    }
+    return trimmed;
+  }
+  // Legacy bare digits — assume the default dial code.
+  const digits = trimmed.replace(/\D/g, "");
+  return digits ? `${PHONE.countryCode} ${digits}` : "";
 }
 
 /** Indian Rupee currency, no decimals by default. */

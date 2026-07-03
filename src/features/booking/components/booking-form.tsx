@@ -12,6 +12,7 @@ import {
   Smartphone,
   Check,
   Gift,
+  AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -35,11 +36,12 @@ import {
   combineDateTime,
   getDuration,
   isWeekendRate,
+  isWithinStoreHours,
   toDateInputValue,
   toTimeInputValue,
   todayISODate,
 } from "@/lib/utils/datetime";
-import { formatCurrency, formatIndianPhone } from "@/lib/utils/format";
+import { formatCurrency } from "@/lib/utils/format";
 import {
   estimateForDuration,
   fleet,
@@ -50,6 +52,7 @@ import { createBooking } from "../actions";
 import { useBookingForm } from "../hooks/use-booking-form";
 import { useBookingDraft } from "../hooks/use-booking-draft";
 import { FloatingField } from "./floating-field";
+import { PhoneField } from "./phone-field";
 import { TimeField } from "./time-field";
 import { TextareaField } from "./textarea-field";
 import { FormSection } from "./form-section";
@@ -137,6 +140,17 @@ export function BookingForm() {
     values.endTime,
   ]);
 
+  // Store-hours problem with the chosen times. Surfaced immediately (not gated
+  // on "touched") because the end time is usually auto-filled from the slab and
+  // never focused — so the rider would otherwise get no explanation.
+  const storeHoursIssue = React.useMemo(() => {
+    const start = combineDateTime(values.startDate, values.startTime);
+    const end = combineDateTime(values.endDate, values.endTime);
+    const startClosed = Boolean(start) && !isWithinStoreHours(start!);
+    const endClosed = Boolean(end) && !isWithinStoreHours(end!);
+    return startClosed || endClosed ? { startClosed, endClosed } : null;
+  }, [values.startDate, values.startTime, values.endDate, values.endTime]);
+
   if (success) {
     return <SuccessScreen reference={success} onBookAnother={handleBookAnother} />;
   }
@@ -154,15 +168,16 @@ export function BookingForm() {
     return { endDate: toDateInputValue(end), endTime: toTimeInputValue(end) };
   };
 
-  // Pick a slab: default start to "now" if empty, then set end = start + slab.
+  // Pick a slab: default start to "now + 15 min" if empty (a small prep
+  // buffer), then set end = start + slab.
   const handleSlabChange = (v: string) => {
     if (v === "custom") {
       setMany({ slabHours: "" });
       return;
     }
-    const now = new Date();
-    const startDate = values.startDate || toDateInputValue(now);
-    const startTime = values.startTime || toTimeInputValue(now);
+    const soon = new Date(Date.now() + 15 * 60_000);
+    const startDate = values.startDate || toDateInputValue(soon);
+    const startTime = values.startTime || toTimeInputValue(soon);
     setMany({
       slabHours: v,
       startDate,
@@ -199,14 +214,21 @@ export function BookingForm() {
                   htmlFor="vehicleInterest"
                   className="text-sm text-muted-foreground"
                 >
-                  Bike (optional)
+                  Bike
                 </label>
                 <Select
                   value={values.vehicleInterest || undefined}
                   onValueChange={(v) => setField("vehicleInterest", v)}
                 >
-                  <SelectTrigger id="vehicleInterest">
-                    <SelectValue placeholder="Choose a bike (optional)" />
+                  <SelectTrigger
+                    id="vehicleInterest"
+                    aria-invalid={Boolean(visibleError("vehicleInterest"))}
+                    className={cn(
+                      visibleError("vehicleInterest") &&
+                        "border-red-400 ring-2 ring-red-500/15",
+                    )}
+                  >
+                    <SelectValue placeholder="Choose a bike" />
                   </SelectTrigger>
                   <SelectContent>
                     {fleet.map((b) => (
@@ -216,6 +238,11 @@ export function BookingForm() {
                     ))}
                   </SelectContent>
                 </Select>
+                {visibleError("vehicleInterest") && (
+                  <p className="px-1 text-xs font-medium text-red-500">
+                    {visibleError("vehicleInterest")}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -292,6 +319,24 @@ export function BookingForm() {
               </p>
             )}
 
+            {storeHoursIssue && (
+              <div className="flex items-start gap-2.5 rounded-2xl border border-red-300 bg-red-50 p-4 text-sm">
+                <AlertCircle className="mt-0.5 size-4 shrink-0 text-red-600" />
+                <div>
+                  <p className="font-semibold text-red-700">
+                    We&apos;re open 7 AM – 12 AM only
+                  </p>
+                  <p className="mt-0.5 text-red-600">
+                    {storeHoursIssue.startClosed &&
+                      "Pickup can't be between 12 AM and 7 AM. "}
+                    {storeHoursIssue.endClosed &&
+                      "This duration returns the bike during our closed hours — it must be returned before 12 AM or after 7 AM. "}
+                    Please adjust your start time or duration.
+                  </p>
+                </div>
+              </div>
+            )}
+
             <DurationSummary values={values} />
 
             {/* Included km + unlimited-km unlock (shown once a duration is set) */}
@@ -305,7 +350,7 @@ export function BookingForm() {
               >
                 <div>
                   <p className="text-sm font-medium text-foreground">
-                    {ride.unlimited ? "Unlimited kilometres" : "Unlock unlimited km"}
+                    {ride.unlimited ? "Unlimited kilometres" : "Add unlimited km"}
                   </p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
                     {ride.unlimited
@@ -429,19 +474,15 @@ export function BookingForm() {
               showCounter
               className="sm:col-span-2"
             />
-            <FloatingField
+            <PhoneField
               id="phone"
               label="Phone number"
-              type="tel"
-              prefix="+91"
               value={values.phone}
+              country={values.phoneCountry}
               onValueChange={(v) => setField("phone", v)}
+              onCountryChange={(c) => setField("phoneCountry", c)}
               onBlur={() => blur("phone")}
               error={visibleError("phone")}
-              format={formatIndianPhone}
-              inputMode="tel"
-              autoComplete="tel-national"
-              maxLength={11}
             />
             <FloatingField
               id="email"
@@ -454,16 +495,39 @@ export function BookingForm() {
               inputMode="email"
               autoComplete="email"
             />
+
+            <p className="-mb-1 px-1 text-sm font-medium text-foreground sm:col-span-2">
+              Your present address in Hyderabad
+            </p>
             <FloatingField
-              id="address"
-              label="Address"
-              value={values.address}
-              onValueChange={(v) => setField("address", v)}
-              onBlur={() => blur("address")}
-              error={visibleError("address")}
-              autoComplete="street-address"
-              maxLength={BOOKING_RULES.limits.address}
-              showCounter
+              id="addressFlat"
+              label="Flat / room number"
+              value={values.addressFlat}
+              onValueChange={(v) => setField("addressFlat", v)}
+              onBlur={() => blur("addressFlat")}
+              error={visibleError("addressFlat")}
+              autoComplete="address-line2"
+              maxLength={60}
+            />
+            <FloatingField
+              id="addressBuilding"
+              label="Building / hostel / hotel name"
+              value={values.addressBuilding}
+              onValueChange={(v) => setField("addressBuilding", v)}
+              onBlur={() => blur("addressBuilding")}
+              error={visibleError("addressBuilding")}
+              autoComplete="address-line1"
+              maxLength={120}
+            />
+            <FloatingField
+              id="addressArea"
+              label="Street / area"
+              value={values.addressArea}
+              onValueChange={(v) => setField("addressArea", v)}
+              onBlur={() => blur("addressArea")}
+              error={visibleError("addressArea")}
+              autoComplete="address-level3"
+              maxLength={160}
               className="sm:col-span-2"
             />
           </div>
@@ -487,18 +551,15 @@ export function BookingForm() {
               autoComplete="name"
               maxLength={BOOKING_RULES.limits.emergencyName}
             />
-            <FloatingField
+            <PhoneField
               id="emergencyPhone"
               label="Contact phone"
-              type="tel"
-              prefix="+91"
               value={values.emergencyPhone}
+              country={values.emergencyPhoneCountry}
               onValueChange={(v) => setField("emergencyPhone", v)}
+              onCountryChange={(c) => setField("emergencyPhoneCountry", c)}
               onBlur={() => blur("emergencyPhone")}
               error={visibleError("emergencyPhone")}
-              format={formatIndianPhone}
-              inputMode="tel"
-              maxLength={11}
             />
           </div>
         </FormSection>
