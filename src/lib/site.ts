@@ -34,7 +34,9 @@ export const contact = {
   hoursShort: "7 AM – 12 AM, daily",
   instagram: "https://instagram.com/ridewithhyprride",
   instagramHandle: "@ridewithhyprride",
-  mapsQuery: "Vittal Rao Nagar, Madhapur, Hyderabad, 500081",
+  // The live Google listing — used for the embedded map and the "Visit us" link.
+  mapsQuery: "Hyprride Bike Rentals, Madhapur, Hyderabad",
+  mapsUrl: "https://maps.app.goo.gl/YT7fGP1YwZQJ9TXXA",
 } as const;
 
 /** Builds a WhatsApp deep link with an optional context-specific message. */

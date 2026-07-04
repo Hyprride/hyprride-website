@@ -10,9 +10,7 @@ const details = [
     icon: MapPin,
     label: "Visit us",
     value: contact.address.full,
-    href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-      contact.mapsQuery,
-    )}`,
+    href: contact.mapsUrl,
   },
   {
     icon: Clock,
