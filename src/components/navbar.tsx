@@ -32,13 +32,9 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        // Frosted-glass bar — always visible over the hero, stronger on scroll.
-        "fixed inset-x-0 top-0 z-50 border-b border-white/20 backdrop-blur-2xl backdrop-saturate-150 transition-[background-color,box-shadow] duration-300",
-        "bg-background/80 supports-[backdrop-filter]:bg-background/40",
-        scrolled && "shadow-soft supports-[backdrop-filter]:bg-background/55",
-        // While the mobile menu is open, make the whole bar solid so it reads
-        // as one opaque surface with the menu panel below it.
-        open && "bg-background supports-[backdrop-filter]:bg-background",
+        // Solid, opaque bar — no glass/blur/transparency anywhere.
+        "fixed inset-x-0 top-0 z-50 border-b border-border bg-background transition-shadow duration-300",
+        scrolled && "shadow-soft",
       )}
     >
       <div className="mx-auto flex h-16 max-w-8xl items-center justify-between gap-4 px-5 sm:h-[4.5rem] sm:px-6 lg:px-8">
