@@ -1,10 +1,10 @@
 import { ArrowRight } from "lucide-react";
 
-import { whyFeatures } from "@/lib/data";
-import { Reveal, StaggerGroup, StaggerItem } from "@/components/shared/reveal";
+import { Reveal } from "@/components/shared/reveal";
 import { Button } from "@/components/ui/button";
 import { whatsappLink } from "@/lib/site";
 import { WhatsAppIcon } from "@/components/shared/icons";
+import { WhyFeatures } from "./why-features";
 
 export function Why() {
   return (
@@ -51,25 +51,9 @@ export function Why() {
           </div>
 
           <div className="lg:col-span-7">
-            <StaggerGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {whyFeatures.map((feature) => (
-                <StaggerItem key={feature.title}>
-                  <article className="group h-full rounded-3xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-brand/30 hover:shadow-soft">
-                    <div className="flex items-center gap-3">
-                      <span className="grid size-11 place-items-center rounded-2xl bg-brand/10 text-brand transition-colors duration-300 group-hover:bg-brand group-hover:text-[#2a2208]">
-                        <feature.icon className="size-[22px]" />
-                      </span>
-                      <h3 className="text-base font-semibold tracking-tight">
-                        {feature.title}
-                      </h3>
-                    </div>
-                    <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-                      {feature.description}
-                    </p>
-                  </article>
-                </StaggerItem>
-              ))}
-            </StaggerGroup>
+            <Reveal>
+              <WhyFeatures />
+            </Reveal>
           </div>
         </div>
       </div>
