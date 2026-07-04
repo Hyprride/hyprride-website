@@ -365,9 +365,9 @@ export type Step = {
 export const steps: Step[] = [
   {
     number: "01",
-    title: "Contact us",
+    title: "Book your ride",
     description:
-      "Message us on WhatsApp or call. Tell us the bike and the time you need.",
+      "Pick your bike and time on our booking form — or message us on WhatsApp.",
   },
   {
     number: "02",
