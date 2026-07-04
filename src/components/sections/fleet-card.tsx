@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { CalendarCheck, Check } from "lucide-react";
 
 import type { Bike } from "@/lib/data";
 import { cn } from "@/lib/utils";
@@ -154,17 +155,28 @@ export function FleetCard({ bike }: { bike: Bike }) {
           included
         </p>
 
-        <Button asChild className="mt-5 w-full">
-          <a
-            href={whatsappLink(message)}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Enquire about the ${bike.name} ${bike.model} on WhatsApp`}
-          >
-            <WhatsAppIcon className="size-4" />
-            Enquire on WhatsApp
-          </a>
-        </Button>
+        <div className="mt-5 grid grid-cols-2 gap-2">
+          <Button asChild>
+            <Link
+              href={`/book?bike=${bike.slug}`}
+              aria-label={`Book the ${bike.name} ${bike.model}`}
+            >
+              <CalendarCheck className="size-4" />
+              Book now
+            </Link>
+          </Button>
+          <Button asChild variant="outline">
+            <a
+              href={whatsappLink(message)}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Enquire about the ${bike.name} ${bike.model} on WhatsApp`}
+            >
+              <WhatsAppIcon className="size-4" />
+              WhatsApp
+            </a>
+          </Button>
+        </div>
       </div>
     </article>
   );

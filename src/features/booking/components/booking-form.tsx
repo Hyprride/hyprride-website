@@ -78,6 +78,15 @@ export function BookingForm() {
     },
   });
 
+  // Preselect a bike from a deep link (e.g. /book?bike=tvs-ntorq-125). Runs
+  // after the draft restore, so an explicit "Book" click wins over any draft.
+  React.useEffect(() => {
+    const slug = new URLSearchParams(window.location.search).get("bike");
+    if (slug && fleet.some((b) => b.slug === slug)) {
+      setField("vehicleInterest", slug);
+    }
+  }, [setField]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isPending) return;
