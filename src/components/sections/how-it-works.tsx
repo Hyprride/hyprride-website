@@ -1,11 +1,11 @@
-import { Bike, FileText, KeyRound, MessageCircle } from "lucide-react";
+import { Bike, CalendarCheck, FileText, KeyRound } from "lucide-react";
 
 import { steps } from "@/lib/data";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { StaggerGroup, StaggerItem } from "@/components/shared/reveal";
 import { CtaButtons } from "@/components/shared/cta-buttons";
 
-const stepIcons = [MessageCircle, FileText, KeyRound, Bike];
+const stepIcons = [CalendarCheck, FileText, KeyRound, Bike];
 
 export function HowItWorks() {
   return (
@@ -13,8 +13,8 @@ export function HowItWorks() {
       <div className="mx-auto max-w-8xl px-5 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="How it works"
-          title="From message to motion in four steps"
-          description="No app downloads. No logins. Just a quick chat and you're on the road."
+          title="Book your ride to the road in four steps"
+          description="No app downloads, no logins — Book in just few taps and your ride is ready."
         />
 
         <StaggerGroup className="relative mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
