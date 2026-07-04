@@ -36,6 +36,9 @@ export function Navbar() {
         "fixed inset-x-0 top-0 z-50 border-b border-white/20 backdrop-blur-2xl backdrop-saturate-150 transition-[background-color,box-shadow] duration-300",
         "bg-background/80 supports-[backdrop-filter]:bg-background/40",
         scrolled && "shadow-soft supports-[backdrop-filter]:bg-background/55",
+        // While the mobile menu is open, make the whole bar solid so it reads
+        // as one opaque surface with the menu panel below it.
+        open && "bg-background supports-[backdrop-filter]:bg-background",
       )}
     >
       <div className="mx-auto flex h-16 max-w-8xl items-center justify-between gap-4 px-5 sm:h-[4.5rem] sm:px-6 lg:px-8">
@@ -98,7 +101,7 @@ export function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 top-16 z-40 bg-background/95 backdrop-blur-xl lg:hidden sm:top-[4.5rem]"
+            className="fixed inset-0 top-16 z-40 bg-background lg:hidden sm:top-[4.5rem]"
           >
             <motion.nav
               className="container-px flex flex-col gap-1 py-6"
