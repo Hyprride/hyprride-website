@@ -321,33 +321,39 @@ export type Feature = {
 
 export const whyFeatures: Feature[] = [
   {
-    title: "Regular servicing",
-    description: "Serviced and inspected every two months — no exceptions.",
-    icon: Wrench,
-  },
-  {
-    title: "Helmet sanitization",
-    description: "UV-sterilised helmets for a clean, safe ride every time.",
+    title: "Complimentary with every ride",
+    description:
+      "A sanitised helmet, a hygiene kit and a rain coat — all included, free of charge.",
     icon: Sparkles,
   },
   {
-    title: "Transparency",
-    description: "No hidden charges. No last-minute surprises. Ever.",
+    title: "Regularly serviced bikes",
+    description:
+      "Every bike is serviced and inspected regularly — safety and performance come first.",
+    icon: Wrench,
+  },
+  {
+    title: "Transparent pricing",
+    description:
+      "No hidden charges, no last-minute surprises. The price you see is the price you pay.",
     icon: Eye,
   },
   {
     title: "Fast support",
-    description: "Immediate help on call or WhatsApp whenever you need it.",
+    description:
+      "Quick help on call or WhatsApp — from booking right through to your return.",
     icon: Headset,
   },
   {
-    title: "Well-maintained fleet",
-    description: "Regular checks keep every ride smooth and hassle-free.",
+    title: "Clean, ready-to-ride bikes",
+    description:
+      "Routine checks keep every ride smooth, spotless and completely hassle-free.",
     icon: ShieldCheck,
   },
   {
-    title: "Reliable rides",
-    description: "Ready-to-ride vehicles you can depend on, day or night.",
+    title: "Reliable, round-the-clock",
+    description:
+      "Dependable bikes you can count on across Hyderabad, day or night.",
     icon: HeartHandshake,
   },
 ];

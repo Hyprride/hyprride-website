@@ -18,11 +18,11 @@ export default function HomePage() {
       <main>
         <Hero />
         <Fleet />
-        <Story />
         <Why />
         <HowItWorks />
         <Gallery />
         <Testimonials />
+        <Story />
         <Faq />
         <Contact />
       </main>
