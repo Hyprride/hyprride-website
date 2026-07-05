@@ -548,14 +548,29 @@ export const faqs: Faq[] = [
       "A refundable security deposit may apply depending on the bike and duration. The exact amount is shared upfront before you confirm — no hidden charges, ever. Ask us on WhatsApp for your specific booking.",
   },
   {
+    question: "What's included with every ride?",
+    answer:
+      "Every ride comes with a sanitised helmet, a hygiene kit and a rain coat — all complimentary. Add to that a regularly serviced, clean bike and quick WhatsApp support from booking right through to your return.",
+  },
+  {
     question: "What is the fuel policy?",
     answer:
-      "Bikes are handed over ready-to-ride with fuel for your included kilometres. You cover fuel for the distance you ride, and we recommend returning the bike with a comparable level. Each plan includes free kilometres — extra distance is billed at a transparent per-km rate.",
+      "Fuel isn't included — you fill fuel yourself for the distance you ride. Every bike runs on petrol and is handed over with just enough to reach the nearest pump, so please top up before you set off. This is separate from your kilometre allowance: your price covers a set number of kilometres, while petrol is always paid for by you at the pump.",
+  },
+  {
+    question: "Is there a kilometre limit?",
+    answer:
+      "Yes — each booking includes a set number of kilometres, shown with every bike's pricing. Go beyond it and the extra distance is billed at a transparent per-kilometre rate, or you can unlock unlimited kilometres for a small one-time add-on when you book. You'll always see the limit before you confirm.",
   },
   {
     question: "Are there late return charges?",
     answer:
       "Returning on time keeps it simple. If you're running late, just message us to extend — late returns without notice are charged on an hourly basis. Timely communication almost always avoids extra cost.",
+  },
+  {
+    question: "Can I extend my ride?",
+    answer:
+      "Absolutely. Rides are flexible — just message us on WhatsApp before your time ends and we'll extend your booking subject to availability, at transparent rates.",
   },
   {
     question: "How do I open the boot space and fuel tank?",
@@ -566,10 +581,5 @@ export const faqs: Faq[] = [
     question: "How do I start the vehicles?",
     answer:
       "For the Jupiter, Ntorq, Raider 125 and Apache RTR: insert the key and turn it ON, wait for the speedometer to load, make sure the side stand is up, confirm the kill switch is ON, then press the self-start button.",
-  },
-  {
-    question: "Can I extend my ride?",
-    answer:
-      "Absolutely. Rides are flexible — just message us on WhatsApp before your time ends and we'll extend your booking subject to availability, at transparent rates.",
   },
 ];

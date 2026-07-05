@@ -16,7 +16,7 @@ export function Fleet() {
               <br className="hidden sm:block" /> Every one is rider-ready.
             </>
           }
-          description="A curated lineup of TVS scooters and motorcycles — sanitised, fuelled and serviced. Transparent hourly and daily pricing, helmet always included."
+          description="A curated lineup of TVS scooters and motorcycles — sanitised, serviced and road-ready. Transparent hourly and daily pricing, helmet always included."
         />
 
         <StaggerGroup className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
