@@ -441,51 +441,89 @@ export type Testimonial = {
  *   url    → your Google Maps listing (used for the "read reviews" links)
  */
 export const googleRating: { rating: number; total: number; url: string } = {
-  rating: 4.8,
+  rating: 4.9,
   total: 0,
   url: "https://maps.app.goo.gl/JB8WNXKwanKzzUnU9",
 };
 
 /**
- * ── REPLACE THESE WITH REAL GOOGLE REVIEWS ──
- * Copy the text + name from your Google reviews. `initials` is the avatar
- * fallback; `rating` and `date` are optional.
+ * Real, verbatim reviews from the HYPRRIDE Google Business listing. Only the
+ * business name has been normalised (reviewers wrote "Hyper Ride" / "Hyprride")
+ * and Google's "…"/"NEW" UI artefacts trimmed — the wording is otherwise theirs.
+ * `date` is the "X ago" stamp from Google; `rating` is that review's star count.
  */
 export const testimonials: Testimonial[] = [
   {
     quote:
-      "Booked an Ntorq for a weekend trip. The bike was spotless, fully fuelled and the helmet was freshly sanitised. Pricing was exactly what they quoted — zero surprises.",
-    name: "Karthik R.",
-    role: "Software engineer, Madhapur",
-    initials: "KR",
+      "Had a great experience renting a bike. The bike was in excellent condition — smooth ride, well-maintained, and very comfortable. The rental process was quick and hassle-free, and the staff was polite and helpful. Pricing was reasonable, and everything was explained clearly. Highly recommended for anyone looking for a reliable bike on rent!",
+    name: "Akash Panda",
+    role: "Google review",
+    initials: "AP",
+    rating: 5,
+    date: "4 months ago",
   },
   {
     quote:
-      "I rent for my daily commute to HITEC City. Quick WhatsApp booking, bikes are always well maintained, and support replies in minutes. Genuinely reliable.",
-    name: "Sneha P.",
-    role: "Product designer, Gachibowli",
-    initials: "SP",
+      "Had a great experience with this bike rental service. The booking process was quick, the staff was helpful, and the bike was in perfect condition. Mileage was good and there were no issues throughout the ride. Pricing is transparent and customer support is responsive. Definitely one of the best rental services in the area.",
+    name: "Sunil Mattaparthi",
+    role: "Google review",
+    initials: "SM",
+    rating: 5,
+    date: "6 months ago",
   },
   {
     quote:
-      "Took the Apache RTR for a night ride to the outskirts. Smooth machine, transparent hourly pricing and a hygiene kit in the box. Felt premium end to end.",
-    name: "Aditya M.",
-    role: "Weekend rider",
-    initials: "AM",
+      "I recently rented a bike from HYPRRIDE and had a great experience. The booking process was smooth and hassle-free. The bike was in excellent condition, clean, and well-maintained. The staff was polite, professional, and explained all the details clearly. Pricing was reasonable with no hidden charges. Highly recommend HYPRRIDE for anyone looking for a reliable and comfortable ride!",
+    name: "Lakshmi Sri Rajeswari Guttula",
+    role: "Google review",
+    initials: "LG",
+    rating: 5,
+    date: "4 months ago",
   },
   {
     quote:
-      "Needed a bike last minute for a hospital visit. They sorted it within the hour, no hidden charges. From sunrise to midnight, they really do have your back.",
-    name: "Fatima S.",
-    role: "Student, Hyderabad",
-    initials: "FS",
+      "The owner was very polite and explained all the details clearly. Provided a hygiene kit and helmet as well. Excellent service and well-maintained facilities.",
+    name: "Snehal Mankar",
+    role: "Google Local Guide",
+    initials: "SM",
+    rating: 5,
+    date: "8 months ago",
   },
   {
     quote:
-      "The Jupiter was perfect for running errands all day — meeting, shopping, dinner. Light, easy and affordable. Will definitely rent again.",
-    name: "Rahul V.",
-    role: "Marketing consultant",
-    initials: "RV",
+      "The experience was wonderful. I love the way they take responsibility for each and everything — loved their response and pricing. Highly recommend for a real bike rental experience!",
+    name: "Praneeth Kumar",
+    role: "Google review",
+    initials: "PK",
+    rating: 5,
+    date: "3 weeks ago",
+  },
+  {
+    quote:
+      "Bunch of enthusiastic young guys making a good impact in the market with very affordable pricing and vehicles in good condition — and a hassle-free process, of course.",
+    name: "kalyan katta",
+    role: "Google Local Guide",
+    initials: "KK",
+    rating: 5,
+    date: "2 months ago",
+  },
+  {
+    quote:
+      "I had a fantastic experience with HYPRRIDE bike rentals. The booking process was super easy, and the staff was very friendly and professional. The bike I rented was in good condition and clean, comfortable to ride. Highly recommended for anyone looking to explore the area on two wheels.",
+    name: "Madhuri Kesanakurthi",
+    role: "Google review",
+    initials: "MK",
+    rating: 4,
+    date: "4 months ago",
+  },
+  {
+    quote:
+      "I had a really good experience with HYPRRIDE. The staff was very polite and respectful, and explained everything clearly. The bike was well-maintained, smooth to ride, and gave a very comfortable experience on the road. The whole process was simple and hassle-free. I would definitely recommend HYPRRIDE to anyone looking for a reliable and pleasant rental service.",
+    name: "Gavarla Mounika",
+    role: "Google review",
+    initials: "GM",
+    rating: 4,
+    date: "9 months ago",
   },
 ];
 
