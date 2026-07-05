@@ -38,7 +38,7 @@ const moments: Moment[] = [
   },
   {
     title: "Weekend getaways",
-    caption: "Escape the city on a full tank of freedom.",
+    caption: "Escape the city. Chase the open road.",
     accent: "from-emerald-600 via-zinc-800 to-black",
     icon: Mountain,
   },
