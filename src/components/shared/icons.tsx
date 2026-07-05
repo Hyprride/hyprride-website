@@ -15,6 +15,37 @@ export function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
+/**
+ * The multi-colour Google "G" — used to mark the customer reviews as genuine
+ * Google ratings. Keeps its brand colours in the forced-light theme.
+ */
+export function GoogleGIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className={cn("size-4", className)}
+    >
+      <path
+        fill="#4285F4"
+        d="M23.52 12.273c0-.851-.076-1.67-.218-2.455H12v4.642h6.458a5.52 5.52 0 0 1-2.394 3.622v3.01h3.878c2.269-2.09 3.578-5.17 3.578-8.82z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 24c3.24 0 5.956-1.075 7.942-2.908l-3.878-3.01c-1.075.72-2.45 1.145-4.064 1.145-3.125 0-5.77-2.11-6.714-4.946H1.28v3.11A11.996 11.996 0 0 0 12 24z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.286 14.28A7.212 7.212 0 0 1 4.91 12c0-.79.136-1.558.376-2.28V6.61H1.28A11.996 11.996 0 0 0 0 12c0 1.936.464 3.766 1.28 5.39l4.006-3.11z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 4.773c1.762 0 3.344.606 4.59 1.796l3.44-3.44C17.952 1.19 15.235 0 12 0A11.996 11.996 0 0 0 1.28 6.61l4.006 3.11C6.23 6.884 8.875 4.773 12 4.773z"
+      />
+    </svg>
+  );
+}
+
 export function InstagramGlyph({ className }: { className?: string }) {
   return (
     <svg
