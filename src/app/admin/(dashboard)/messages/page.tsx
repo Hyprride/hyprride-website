@@ -1,11 +1,11 @@
-import { getRecentCustomers } from "@/features/dashboard/queries";
+import { getConversationContacts } from "@/features/dashboard/messages-queries";
 import { MessagesInbox } from "@/features/dashboard/components/messages/messages-inbox";
 
 export const metadata = { title: "Messages" };
 export const dynamic = "force-dynamic";
 
 export default async function MessagesPage() {
-  const contacts = await getRecentCustomers(20);
+  const contacts = await getConversationContacts(30);
 
   return (
     <div className="space-y-5">
@@ -14,8 +14,8 @@ export default async function MessagesPage() {
           Messages
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Unified inbox for WhatsApp and Instagram — architecture ready,
-          integrations pending.
+          Log WhatsApp replies and internal notes per customer. One-click
+          WhatsApp; full inbound sync connects later.
         </p>
       </div>
       <MessagesInbox contacts={contacts} />
