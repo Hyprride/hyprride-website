@@ -39,7 +39,14 @@ export async function getSettings(): Promise<AppSettingsRow> {
     .maybeSingle();
 
   if (error || !data) {
-    if (error) console.error("[getSettings]", error.message);
+    // "Could not find the table … in the schema cache" (PostgREST PGRST205)
+    // simply means migration 0004 hasn't been applied yet — fall back to the
+    // seeded defaults quietly instead of surfacing a red console error.
+    const notMigrated =
+      error?.code === "PGRST205" || /schema cache/i.test(error?.message ?? "");
+    if (error && !notMigrated) {
+      console.error("[getSettings]", error.message);
+    }
     return DEFAULT_SETTINGS;
   }
   return data;
