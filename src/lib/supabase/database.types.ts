@@ -190,6 +190,42 @@ export interface Database {
           },
         ];
       };
+      app_settings: {
+        Row: {
+          id: boolean;
+          business_name: string;
+          legal_name: string;
+          business_phone: string;
+          business_email: string;
+          business_address: string;
+          operating_hours: string;
+          gst_rate: number;
+          security_deposit: number;
+          dynamic_pricing: boolean;
+          notify_whatsapp: boolean;
+          notify_email: boolean;
+          notify_instagram: boolean;
+          updated_at: string;
+        };
+        Insert: {
+          id?: boolean;
+          business_name?: string;
+          legal_name?: string;
+          business_phone?: string;
+          business_email?: string;
+          business_address?: string;
+          operating_hours?: string;
+          gst_rate?: number;
+          security_deposit?: number;
+          dynamic_pricing?: boolean;
+          notify_whatsapp?: boolean;
+          notify_email?: boolean;
+          notify_instagram?: boolean;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["app_settings"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -209,3 +245,4 @@ export type BookingRow = Database["public"]["Tables"]["bookings"]["Row"];
 export type ActivityLogRow =
   Database["public"]["Tables"]["activity_logs"]["Row"];
 export type MessageRow = Database["public"]["Tables"]["messages"]["Row"];
+export type AppSettingsRow = Database["public"]["Tables"]["app_settings"]["Row"];

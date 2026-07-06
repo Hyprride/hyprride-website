@@ -26,7 +26,7 @@ export const DASHBOARD_NAV: NavItem[] = [
   { label: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { label: "Messages", href: "/admin/messages", icon: MessageSquare },
   { label: "AI Assistant", href: "/admin/ai-assistant", icon: Sparkles, soon: true },
-  { label: "Settings", href: "/admin/settings", icon: Settings, soon: true },
+  { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
 /** Resolves the active nav item for a given pathname (longest match wins). */
