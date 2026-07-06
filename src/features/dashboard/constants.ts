@@ -25,7 +25,7 @@ export const DASHBOARD_NAV: NavItem[] = [
   { label: "Calendar", href: "/admin/calendar", icon: CalendarDays },
   { label: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { label: "Messages", href: "/admin/messages", icon: MessageSquare },
-  { label: "AI Assistant", href: "/admin/ai-assistant", icon: Sparkles, soon: true },
+  { label: "AI Assistant", href: "/admin/ai-assistant", icon: Sparkles },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 

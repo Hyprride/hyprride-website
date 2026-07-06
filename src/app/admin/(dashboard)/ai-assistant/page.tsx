@@ -10,7 +10,7 @@ export default function AiAssistantPage() {
           AI Assistant
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Customer lookups, summaries and suggested replies — OpenAI-ready.
+          Customer lookups, summaries and suggested replies — powered by Claude.
         </p>
       </div>
       <AiAssistantPanel />
