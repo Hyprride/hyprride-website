@@ -27,6 +27,10 @@ export type BookingStatus =
 /** Whether a lead has been pushed to the in-house booking service. */
 export type SyncStatus = "not_pushed" | "pushed" | "failed";
 
+/** Where a logged message came in / went out. */
+export type MessageChannel = "whatsapp" | "instagram" | "note";
+export type MessageDirection = "in" | "out";
+
 export interface Database {
   public: {
     Tables: {
@@ -159,6 +163,33 @@ export interface Database {
           },
         ];
       };
+      messages: {
+        Row: {
+          id: string;
+          customer_id: string;
+          channel: MessageChannel;
+          direction: MessageDirection;
+          body: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          customer_id: string;
+          channel: MessageChannel;
+          direction?: MessageDirection;
+          body: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["messages"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "messages_customer_id_fkey";
+            columns: ["customer_id"];
+            referencedRelation: "customers";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -177,3 +208,4 @@ export type EmergencyContactRow =
 export type BookingRow = Database["public"]["Tables"]["bookings"]["Row"];
 export type ActivityLogRow =
   Database["public"]["Tables"]["activity_logs"]["Row"];
+export type MessageRow = Database["public"]["Tables"]["messages"]["Row"];
