@@ -71,7 +71,7 @@ export function Navbar() {
               WhatsApp
             </a>
           </Button>
-          <Button asChild size="sm" className="hidden sm:inline-flex">
+          <Button asChild size="sm" variant="book" className="hidden sm:inline-flex">
             <Link href="/book" aria-label="Book a bike">
               <CalendarCheck className="size-4" />
               Book now
@@ -124,7 +124,7 @@ export function Navbar() {
                 </motion.a>
               ))}
               <div className="mt-6 flex flex-col gap-3">
-                <Button asChild size="lg">
+                <Button asChild size="lg" variant="book">
                   <Link href="/book" onClick={() => setOpen(false)}>
                     <CalendarCheck className="size-[18px]" />
                     Book a bike

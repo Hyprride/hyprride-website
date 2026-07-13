@@ -32,8 +32,8 @@ export const contact = {
   },
   hours: "7:00 AM – 12:00 AM",
   hoursShort: "7 AM – 12 AM, daily",
-  instagram: "https://instagram.com/ridewithhyprride",
-  instagramHandle: "@ridewithhyprride",
+  instagram: "https://www.instagram.com/hyprride",
+  instagramHandle: "@hyprride",
   // The live Google listing — used for the embedded map and the "Visit us" link.
   mapsQuery: "Hyprride Bike Rentals, Madhapur, Hyderabad",
   mapsUrl: "https://maps.app.goo.gl/YT7fGP1YwZQJ9TXXA",

@@ -13,10 +13,10 @@ export function Fleet() {
           title={
             <>
               Pick your ride.
-              <br className="hidden sm:block" /> Every one is rider-ready.
+              <br className="hidden sm:block" /> 
             </>
           }
-          description="A curated lineup of TVS scooters and motorcycles — sanitised, serviced and road-ready. Transparent hourly and daily pricing, helmet always included."
+          description="A curated lineup of scooters and motorcycles — sanitised, serviced and road-ready. Transparent hourly and daily pricing, helmet always included."
         />
 
         <StaggerGroup className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">

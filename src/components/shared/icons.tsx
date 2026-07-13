@@ -77,7 +77,7 @@ export function Logo({
 }) {
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <span className="relative grid size-9 place-items-center rounded-xl bg-brand text-[#2a2208] shadow-[0_6px_18px_-6px_rgba(201,162,39,0.7)]">
+      <span className="relative grid size-9 place-items-center rounded-xl bg-brand text-[#1a0606] shadow-[0_6px_18px_-6px_rgba(220,38,38,0.7)]">
         <span className="text-[15px] font-black leading-none tracking-tight">
           HR
         </span>

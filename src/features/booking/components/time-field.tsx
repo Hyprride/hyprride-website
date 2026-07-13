@@ -204,7 +204,7 @@ export function TimeField({
                       onClick={() => setMeridiem(m)}
                       className={cn(
                         "px-2.5 py-1 transition-colors",
-                        ap === m ? "bg-brand text-[#2a2208]" : "text-muted-foreground hover:bg-muted",
+                        ap === m ? "bg-brand text-[#1a0606]" : "text-muted-foreground hover:bg-muted",
                       )}
                     >
                       {m}
@@ -251,7 +251,7 @@ export function TimeField({
                           style={{ left: p.x, top: p.y }}
                           className={cn(
                             "absolute grid size-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full text-sm font-medium transition-colors",
-                            active ? "bg-brand text-[#2a2208]" : "text-foreground hover:bg-brand/10",
+                            active ? "bg-brand text-[#1a0606]" : "text-foreground hover:bg-brand/10",
                           )}
                         >
                           {n}
@@ -269,7 +269,7 @@ export function TimeField({
                           style={{ left: p.x, top: p.y }}
                           className={cn(
                             "absolute grid size-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full text-sm font-medium tabular-nums transition-colors",
-                            active ? "bg-brand text-[#2a2208]" : "text-foreground hover:bg-brand/10",
+                            active ? "bg-brand text-[#1a0606]" : "text-foreground hover:bg-brand/10",
                           )}
                         >
                           {pad(v)}
@@ -284,7 +284,7 @@ export function TimeField({
                   setOpen(false);
                   onBlur?.();
                 }}
-                className="mt-3 w-full rounded-xl bg-brand py-2 text-sm font-semibold text-[#2a2208] transition-colors hover:bg-brand/90"
+                className="mt-3 w-full rounded-xl bg-brand py-2 text-sm font-semibold text-[#1a0606] transition-colors hover:bg-brand/90"
               >
                 Done
               </button>

@@ -179,7 +179,7 @@ export function MessagesInbox({
                 className={cn(
                   "rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
                   filter === f.id
-                    ? "bg-brand text-[#2a2208]"
+                    ? "bg-brand text-[#1a0606]"
                     : "bg-muted text-muted-foreground hover:text-foreground",
                 )}
               >
@@ -294,7 +294,7 @@ export function MessagesInbox({
                     className={cn(
                       "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
                       channel === c.id
-                        ? "bg-brand text-[#2a2208]"
+                        ? "bg-brand text-[#1a0606]"
                         : "bg-muted text-muted-foreground hover:text-foreground",
                     )}
                   >
@@ -368,14 +368,14 @@ function MessageBubble({ message }: { message: MessageRow }) {
       <div
         className={cn(
           "max-w-[80%] rounded-2xl px-3.5 py-2",
-          isOut ? "bg-brand text-[#2a2208]" : "bg-muted text-foreground",
+          isOut ? "bg-brand text-[#1a0606]" : "bg-muted text-foreground",
         )}
       >
         <p className="whitespace-pre-wrap text-sm">{message.body}</p>
         <p
           className={cn(
             "mt-1 flex items-center gap-1 text-[11px]",
-            isOut ? "text-[#2a2208]/70" : "text-muted-foreground",
+            isOut ? "text-[#1a0606]/70" : "text-muted-foreground",
           )}
         >
           {message.channel === "whatsapp" ? (

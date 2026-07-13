@@ -35,7 +35,7 @@ export function Why() {
                 </p>
               </Reveal>
               <Reveal delay={0.15}>
-                <Button asChild size="lg" className="mt-7">
+                <Button asChild size="lg" variant="book" className="mt-7">
                   <a
                     href={whatsappLink()}
                     target="_blank"

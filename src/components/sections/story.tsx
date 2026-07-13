@@ -43,7 +43,7 @@ export function Story() {
               </Reveal>
 
               <Reveal delay={0.15}>
-                <figure className="mt-8 overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-brand-600 via-brand-700 to-black p-7 text-white">
+                <figure className="mt-8 overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-red-700 via-red-950 to-black p-7 text-white">
                   <Quote className="size-7 text-white/40" />
                   <blockquote className="mt-3 text-lg font-medium leading-relaxed">
                     “We don’t just provide bikes — we deliver trust. Every ride
