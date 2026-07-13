@@ -65,7 +65,7 @@ export const BOOKING_STATUS_HEX: Record<BookingStatus, string> = {
 };
 
 /** Brand accent used across dashboard charts. */
-export const BRAND_HEX = "#C9A227";
+export const BRAND_HEX = "#DC2626";
 
 /**
  * The booking service's fixed duration slabs (hours). The public form lets a

@@ -22,7 +22,7 @@ export function ProgressIndicator({
         <span className="text-sm font-medium text-foreground">
           Your booking
         </span>
-        <span className="text-sm font-semibold tabular-nums text-brand">
+        <span className="text-sm font-semibold tabular-nums text-brand-700">
           {progress}%
         </span>
       </div>
@@ -43,7 +43,7 @@ export function ProgressIndicator({
               className={cn(
                 "grid size-5 shrink-0 place-items-center rounded-full text-[10px] font-bold transition-colors duration-300",
                 section.complete
-                  ? "bg-brand text-[#2a2208]"
+                  ? "bg-brand text-[#1a0606]"
                   : section.hasError
                     ? "bg-red-500/15 text-red-500"
                     : "bg-muted text-muted-foreground",

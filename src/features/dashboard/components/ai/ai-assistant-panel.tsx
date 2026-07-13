@@ -187,7 +187,7 @@ function MessageBubble({ message }: { message: Msg }) {
       <div
         className={cn(
           "max-w-[85%] rounded-2xl px-4 py-2.5",
-          isUser ? "bg-brand text-[#2a2208]" : "bg-muted text-foreground",
+          isUser ? "bg-brand text-[#1a0606]" : "bg-muted text-foreground",
         )}
       >
         <p className="whitespace-pre-wrap text-[15px] leading-relaxed">

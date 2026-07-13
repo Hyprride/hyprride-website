@@ -27,7 +27,7 @@ export function HowItWorks() {
               <StaggerItem key={step.number} className="h-full">
                 <div className="relative flex h-full flex-col rounded-3xl border border-border bg-card/60 p-7 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand/30 hover:shadow-soft">
                   <div className="flex items-center justify-between">
-                    <span className="grid size-12 place-items-center rounded-2xl bg-brand text-[#2a2208] shadow-[0_8px_24px_-8px_rgba(201,162,39,0.6)]">
+                    <span className="grid size-12 place-items-center rounded-2xl bg-brand text-[#1a0606] shadow-[0_8px_24px_-8px_rgba(220,38,38,0.6)]">
                       <Icon className="size-6" />
                     </span>
                     <span className="font-display text-4xl font-extrabold text-border">

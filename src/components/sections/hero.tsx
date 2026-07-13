@@ -14,9 +14,9 @@ const easing = [0.21, 0.47, 0.32, 0.98] as const;
 
 /** Hero background rotates through the fleet, looping. */
 const HERO_IMAGES = [
-  { src: "/hero-jupiter.jpg", alt: "TVS Jupiter scooter ready to ride with HYPRRIDE" },
-  { src: "/hero-ntorq.jpg", alt: "TVS Ntorq scooter ready to ride with HYPRRIDE" },
-  { src: "/hero-apache.jpg", alt: "TVS Apache RTR ready to ride with HYPRRIDE" },
+  { src: "/hero-jupiter-r.jpg", alt: "TVS Jupiter scooter ready to ride with HYPRRIDE" },
+  { src: "/hero-ntorq-r.jpg", alt: "TVS Ntorq scooter ready to ride with HYPRRIDE" },
+  { src: "/hero-apache-r.jpg", alt: "TVS Apache RTR ready to ride with HYPRRIDE" },
 ];
 const ROTATE_MS = 5000;
 
@@ -76,8 +76,8 @@ export function Hero() {
       ref={ref}
       className="relative flex min-h-[100svh] flex-col overflow-hidden text-foreground sm:block"
     >
-      {/* Gold backdrop — sits behind the text on mobile; covered by photos on desktop */}
-      <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_60%_35%,#d6bb8c_0%,#bd9c66_55%,#9c8050_100%)]" />
+      {/* Red-to-black backdrop — sits behind the text on mobile; covered by photos on desktop */}
+      <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_60%_35%,#6d0f16_0%,#2c0708_52%,#080303_100%)]" />
 
       {/* Desktop: full-bleed rotating fleet photos */}
       <div className="pointer-events-none absolute inset-0 hidden sm:block">
@@ -122,7 +122,7 @@ export function Hero() {
               </a>
             </motion.div>
 
-            <h1 className="mt-6 font-display text-[13vw] font-extrabold leading-[0.92] tracking-tight sm:text-7xl md:text-8xl lg:text-[7.5rem]">
+            <h1 className="mt-6 font-display text-[13vw] font-extrabold leading-[0.92] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.4)] sm:text-7xl md:text-8xl lg:text-[7.5rem]">
               <motion.span
                 custom={1}
                 variants={fadeUp}
@@ -148,7 +148,7 @@ export function Hero() {
               variants={fadeUp}
               initial="hidden"
               animate="show"
-              className="mt-6 max-w-xl text-pretty text-base font-medium leading-relaxed text-foreground/80 sm:mt-7 sm:text-xl"
+              className="mt-6 max-w-xl text-pretty text-base font-medium leading-relaxed text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,0.35)] sm:mt-7 sm:text-xl"
             >
               Clean bikes, fair prices, instant booking, and a ride you can
               trust.
@@ -161,7 +161,7 @@ export function Hero() {
               animate="show"
               className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:items-center"
             >
-              <Button asChild size="lg">
+              <Button asChild size="lg" variant="book">
                 <Link href="/book" aria-label="Book a bike">
                   <CalendarCheck className="size-[18px]" />
                   Book now
@@ -179,17 +179,17 @@ export function Hero() {
               variants={fadeUp}
               initial="hidden"
               animate="show"
-              className="mt-9 hidden max-w-lg grid-cols-2 gap-6 border-t border-foreground/15 pt-7 sm:mt-12 sm:grid"
+              className="mt-9 hidden max-w-lg grid-cols-2 gap-6 border-t border-white/25 pt-7 sm:mt-12 sm:grid"
             >
               {[
                 { v: "7AM–12AM", l: "Open daily" },
-                { v: "₹79", l: "From / hour" },
+                { v: "₹79", l: "Starting from" },
               ].map((stat) => (
                 <div key={stat.l}>
-                  <dt className="text-xl font-bold tracking-tight sm:text-2xl">
+                  <dt className="text-xl font-bold tracking-tight text-white sm:text-2xl">
                     {stat.v}
                   </dt>
-                  <dd className="mt-1 text-xs font-medium text-foreground/65 sm:text-sm">
+                  <dd className="mt-1 text-xs font-medium text-white/70 sm:text-sm">
                     {stat.l}
                   </dd>
                 </div>
@@ -212,12 +212,12 @@ export function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.8 }}
-        className="absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 text-foreground/50 transition-colors hover:text-foreground md:flex"
+        className="absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 text-white/60 transition-colors hover:text-white md:flex"
       >
         <span className="text-[11px] font-medium uppercase tracking-[0.2em]">
           Scroll
         </span>
-        <span className="grid h-9 w-6 place-items-start justify-center rounded-full border border-foreground/20 p-1.5">
+        <span className="grid h-9 w-6 place-items-start justify-center rounded-full border border-white/25 p-1.5">
           <motion.span
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}

@@ -65,7 +65,7 @@ export function FleetCard({ bike }: { bike: Bike }) {
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
               From
             </p>
-            <p className="text-lg font-bold tracking-tight text-brand">
+            <p className="text-lg font-bold tracking-tight text-brand-700">
               ₹{bike.fromWeekday}
               <span className="text-xs font-medium text-muted-foreground">
                 /hr
@@ -97,7 +97,7 @@ export function FleetCard({ bike }: { bike: Bike }) {
               className={cn(
                 "relative rounded-full px-4 py-1.5 font-medium capitalize transition-colors",
                 plan === p
-                  ? "text-[#2a2208]"
+                  ? "text-[#1a0606]"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
@@ -156,7 +156,7 @@ export function FleetCard({ bike }: { bike: Bike }) {
         </p>
 
         <div className="mt-5 grid grid-cols-2 gap-2">
-          <Button asChild>
+          <Button asChild variant="book">
             <Link
               href={`/book?bike=${bike.slug}`}
               aria-label={`Book the ${bike.name} ${bike.model}`}
