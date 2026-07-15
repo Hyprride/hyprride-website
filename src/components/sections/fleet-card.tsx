@@ -4,7 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarCheck, Check } from "lucide-react";
+import { CalendarCheck, Check, ChevronDown } from "lucide-react";
 
 import type { Bike } from "@/lib/data";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,7 @@ type Plan = "weekday" | "weekend";
 
 export function FleetCard({ bike }: { bike: Bike }) {
   const [plan, setPlan] = React.useState<Plan>("weekday");
+  const [showDetails, setShowDetails] = React.useState(false);
 
   const message = `Hi HYPRRIDE 👋 I'm interested in renting the ${bike.name} ${bike.model} (${bike.engine}). Is it available?`;
 
@@ -51,6 +52,7 @@ export function FleetCard({ bike }: { bike: Bike }) {
       </div>
 
       <div className="flex flex-1 flex-col px-4 pb-4 pt-6">
+        {/* Always visible: name, tagline, from-price */}
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="text-xl font-semibold tracking-tight">
@@ -74,89 +76,131 @@ export function FleetCard({ bike }: { bike: Bike }) {
           </div>
         </div>
 
-        {/* spec chips */}
-        <div className="mt-5 flex flex-wrap gap-2">
-          {bike.specs.map((spec) => (
-            <span
-              key={spec.label}
-              className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-foreground/80"
+        {/* Collapsible: specs, pricing table, perks, WhatsApp */}
+        <AnimatePresence initial={false}>
+          {showDetails && (
+            <motion.div
+              key="details"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="overflow-hidden"
             >
-              <span className="text-muted-foreground">{spec.label}</span>
-              {spec.value}
-            </span>
-          ))}
-        </div>
+              {/* spec chips */}
+              <div className="mt-5 flex flex-wrap gap-2">
+                {bike.specs.map((spec) => (
+                  <span
+                    key={spec.label}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-foreground/80"
+                  >
+                    <span className="text-muted-foreground">{spec.label}</span>
+                    {spec.value}
+                  </span>
+                ))}
+              </div>
 
-        {/* plan toggle */}
-        <div className="mt-6 inline-flex self-start rounded-full border border-border bg-muted/60 p-1 text-sm">
-          {(["weekday", "weekend"] as const).map((p) => (
-            <button
-              key={p}
-              type="button"
-              onClick={() => setPlan(p)}
-              className={cn(
-                "relative rounded-full px-4 py-1.5 font-medium capitalize transition-colors",
-                plan === p
-                  ? "text-[#1a0606]"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {plan === p ? (
-                <motion.span
-                  layoutId={`plan-${bike.slug}`}
-                  className="absolute inset-0 rounded-full bg-brand"
-                  transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                />
-              ) : null}
-              <span className="relative z-10">{p}</span>
-            </button>
-          ))}
-        </div>
-        <p className="mt-2 text-xs text-muted-foreground">
-          {plan === "weekday"
-            ? "Mon 12 AM – Fri 5 PM"
-            : "Fri 5 PM – Mon 12 AM"}{" "}
-          · prices exclusive of GST
-        </p>
+              {/* plan toggle */}
+              <div className="mt-6 inline-flex self-start rounded-full border border-border bg-muted/60 p-1 text-sm">
+                {(["weekday", "weekend"] as const).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPlan(p)}
+                    className={cn(
+                      "relative rounded-full px-4 py-1.5 font-medium capitalize transition-colors",
+                      plan === p
+                        ? "text-[#1a0606]"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {plan === p ? (
+                      <motion.span
+                        layoutId={`plan-${bike.slug}`}
+                        className="absolute inset-0 rounded-full bg-brand"
+                        transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                      />
+                    ) : null}
+                    <span className="relative z-10">{p}</span>
+                  </button>
+                ))}
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {plan === "weekday"
+                  ? "Mon 12 AM – Fri 5 PM"
+                  : "Fri 5 PM – Mon 12 AM"}{" "}
+                · prices exclusive of GST
+              </p>
 
-        {/* pricing table */}
-        <div className="mt-4 overflow-hidden rounded-2xl border border-border">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.dl
-              key={plan}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="divide-y divide-border"
-            >
-              {bike.pricing.map((tier) => (
-                <div
-                  key={tier.duration}
-                  className="flex items-center justify-between gap-4 px-4 py-2.5"
+              {/* pricing table */}
+              <div className="mt-4 overflow-hidden rounded-2xl border border-border">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.dl
+                    key={plan}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="divide-y divide-border"
+                  >
+                    {bike.pricing.map((tier) => (
+                      <div
+                        key={tier.duration}
+                        className="flex items-center justify-between gap-4 px-4 py-2.5"
+                      >
+                        <dt className="text-sm font-medium">{tier.duration}</dt>
+                        <dd className="flex items-baseline gap-2">
+                          <span className="text-[11px] text-muted-foreground">
+                            {tier.km} km
+                          </span>
+                          <span className="w-14 text-right text-sm font-semibold tabular-nums">
+                            ₹{plan === "weekday" ? tier.weekday : tier.weekend}
+                          </span>
+                        </dd>
+                      </div>
+                    ))}
+                  </motion.dl>
+                </AnimatePresence>
+              </div>
+
+              <p className="mt-4 flex items-center gap-2 text-sm font-medium text-foreground/80">
+                <Check className="size-4 text-brand" /> Helmet &amp; hygiene kit
+                included
+              </p>
+
+              <Button asChild variant="outline" className="mt-4 w-full">
+                <a
+                  href={whatsappLink(message)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Enquire about the ${bike.name} ${bike.model} on WhatsApp`}
                 >
-                  <dt className="text-sm font-medium">{tier.duration}</dt>
-                  <dd className="flex items-baseline gap-2">
-                    <span className="text-[11px] text-muted-foreground">
-                      {tier.km} km
-                    </span>
-                    <span className="w-14 text-right text-sm font-semibold tabular-nums">
-                      ₹{plan === "weekday" ? tier.weekday : tier.weekend}
-                    </span>
-                  </dd>
-                </div>
-              ))}
-            </motion.dl>
-          </AnimatePresence>
-        </div>
+                  <WhatsAppIcon className="size-4" />
+                  WhatsApp
+                </a>
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <p className="mt-4 flex items-center gap-2 text-sm font-medium text-foreground/80">
-          <Check className="size-4 text-brand" /> Helmet &amp; hygiene kit
-          included
-        </p>
-
-        <div className="mt-5 grid grid-cols-2 gap-2">
-          <Button asChild variant="book">
+        {/* Always visible: show details toggle + book now */}
+        <div className="mt-auto grid grid-cols-2 gap-2 pt-5">
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => setShowDetails((v) => !v)}
+            aria-expanded={showDetails}
+          >
+            {showDetails ? "Hide pricing" : "Show pricing"}
+            <ChevronDown
+              className={cn(
+                "size-4 transition-transform duration-300",
+                showDetails && "rotate-180",
+              )}
+            />
+          </Button>
+          <Button asChild size="sm" variant="book">
             <Link
               href={`/book?bike=${bike.slug}`}
               aria-label={`Book the ${bike.name} ${bike.model}`}
@@ -164,17 +208,6 @@ export function FleetCard({ bike }: { bike: Bike }) {
               <CalendarCheck className="size-4" />
               Book now
             </Link>
-          </Button>
-          <Button asChild variant="outline">
-            <a
-              href={whatsappLink(message)}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Enquire about the ${bike.name} ${bike.model} on WhatsApp`}
-            >
-              <WhatsAppIcon className="size-4" />
-              WhatsApp
-            </a>
           </Button>
         </div>
       </div>
