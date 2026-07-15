@@ -70,11 +70,22 @@ export function toTimeInputValue(d: Date): string {
 export const STORE_OPEN_HOUR = 7;
 
 /**
- * Whether a time-of-day is within store hours (07:00–23:59). Pickups and
- * returns are only accepted while the store is open.
+ * Whether a time-of-day is within store hours (07:00–23:59). Used for pickups.
  */
 export function isWithinStoreHours(date: Date): boolean {
   return date.getHours() >= STORE_OPEN_HOUR;
+}
+
+/**
+ * Whether a time-of-day is a valid return time: store hours (07:00–23:59) plus
+ * exactly 12:00 AM (midnight) — the closing moment — so a rental may end right
+ * at close. Disallows 12:01 AM–6:59 AM.
+ */
+export function isWithinReturnHours(date: Date): boolean {
+  return (
+    date.getHours() >= STORE_OPEN_HOUR ||
+    (date.getHours() === 0 && date.getMinutes() === 0)
+  );
 }
 
 /**

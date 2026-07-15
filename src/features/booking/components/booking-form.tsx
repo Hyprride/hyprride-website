@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Loader2,
@@ -36,6 +37,7 @@ import {
   combineDateTime,
   getDuration,
   isWeekendRate,
+  isWithinReturnHours,
   isWithinStoreHours,
   toDateInputValue,
   toTimeInputValue,
@@ -156,7 +158,7 @@ export function BookingForm() {
     const start = combineDateTime(values.startDate, values.startTime);
     const end = combineDateTime(values.endDate, values.endTime);
     const startClosed = Boolean(start) && !isWithinStoreHours(start!);
-    const endClosed = Boolean(end) && !isWithinStoreHours(end!);
+    const endClosed = Boolean(end) && !isWithinReturnHours(end!);
     return startClosed || endClosed ? { startClosed, endClosed } : null;
   }, [values.startDate, values.startTime, values.endDate, values.endTime]);
 
@@ -206,6 +208,8 @@ export function BookingForm() {
     }
   };
 
+  const selectedBike = fleet.find((b) => b.slug === values.vehicleInterest);
+
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:items-start">
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
@@ -247,6 +251,27 @@ export function BookingForm() {
                     ))}
                   </SelectContent>
                 </Select>
+                {selectedBike?.image && (
+                  <div className="mt-1 flex items-center gap-3 rounded-xl border border-border bg-gradient-to-br from-zinc-100 to-zinc-200 p-2">
+                    <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-lg bg-white/60">
+                      <Image
+                        src={selectedBike.image}
+                        alt={`${selectedBike.name} ${selectedBike.model}`}
+                        fill
+                        sizes="80px"
+                        className="object-contain p-1"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-foreground">
+                        {selectedBike.name} {selectedBike.model}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {selectedBike.engine} · {selectedBike.category}
+                      </p>
+                    </div>
+                  </div>
+                )}
                 {visibleError("vehicleInterest") && (
                   <p className="px-1 text-xs font-medium text-red-500">
                     {visibleError("vehicleInterest")}
@@ -339,7 +364,7 @@ export function BookingForm() {
                     {storeHoursIssue.startClosed &&
                       "Pickup can't be between 12 AM and 7 AM. "}
                     {storeHoursIssue.endClosed &&
-                      "This duration returns the bike during our closed hours — it must be returned before 12 AM or after 7 AM. "}
+                      "This duration returns the bike during our closed hours — it must be returned by 12 AM or after 7 AM. "}
                     Please adjust your start time or duration.
                   </p>
                 </div>
