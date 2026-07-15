@@ -5,6 +5,7 @@ import {
   combineDateTime,
   getDuration,
   isWeekendRate,
+  isWithinReturnHours,
   isWithinStoreHours,
 } from "@/lib/utils/datetime";
 import { toE164 } from "@/lib/utils/format";
@@ -83,7 +84,9 @@ export const bookingFieldSchemas = {
     .string()
     .trim()
     .min(2, "Please enter your full name")
-    .max(BOOKING_RULES.limits.name, "That name is a little too long"),
+    .max(BOOKING_RULES.limits.name, "That name is a little too long")
+    .regex(/^\D+$/, "Name can't contain numbers")
+    .refine((v) => /\p{L}/u.test(v), "Please enter a valid name"),
   // Phone format depends on the country — checked in the cross-field refine.
   phone: z.string().trim().min(1, "Phone number is required"),
   phoneCountry: z.string().min(1),
@@ -113,7 +116,9 @@ export const bookingFieldSchemas = {
     .string()
     .trim()
     .min(2, "Enter the contact's name")
-    .max(BOOKING_RULES.limits.emergencyName, "That name is a little too long"),
+    .max(BOOKING_RULES.limits.emergencyName, "That name is a little too long")
+    .regex(/^\D+$/, "Name can't contain numbers")
+    .refine((v) => /\p{L}/u.test(v), "Enter a valid name"),
   emergencyPhone: z.string().trim().min(1, "Contact phone is required"),
   emergencyPhoneCountry: z.string().min(1),
   notes: z
@@ -185,6 +190,21 @@ export const bookingFormSchema = z
     checkPhone(values.phone, values.phoneCountry, "phone");
     checkPhone(values.emergencyPhone, values.emergencyPhoneCountry, "emergencyPhone");
 
+    // Emergency contact must be a different number from the rider's own phone.
+    const riderDigits = values.phone.replace(/\D/g, "");
+    const emergencyDigits = values.emergencyPhone.replace(/\D/g, "");
+    if (
+      riderDigits.length > 0 &&
+      riderDigits === emergencyDigits &&
+      values.phoneCountry === values.emergencyPhoneCountry
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["emergencyPhone"],
+        message: "Emergency contact can't be the same as your own number",
+      });
+    }
+
     const start = combineDateTime(values.startDate, values.startTime);
     const end = combineDateTime(values.endDate, values.endTime);
 
@@ -233,12 +253,12 @@ export const bookingFormSchema = z
       return;
     }
 
-    // No returns during the closed window — return before 12 AM or after 7 AM.
-    if (!isWithinStoreHours(end)) {
+    // Returns allowed up to 12 AM (midnight); closed window is 12:01 AM–7 AM.
+    if (!isWithinReturnHours(end)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["endTime"],
-        message: "No returns 12 AM–7 AM — return before 12 AM or after 7 AM.",
+        message: "Returns must be by 12 AM (midnight) or from 7 AM onward.",
       });
     }
 
