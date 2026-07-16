@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 const config: Config = {
   darkMode: "class",
@@ -52,6 +53,13 @@ const config: Config = {
         "4xl": "2rem",
         "5xl": "2.5rem",
       },
+      transitionTimingFunction: {
+        // Expo-out: fast departure, gentle settle, no bounce. The house curve
+        // for interactive surfaces. A named token rather than an arbitrary
+        // value — `ease-[cubic-bezier(...)]` parses as ambiguous and silently
+        // emits no CSS at all.
+        premium: "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
       maxWidth: {
         "8xl": "88rem",
       },
@@ -94,7 +102,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 };
 
 export default config;

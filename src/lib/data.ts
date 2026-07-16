@@ -3,7 +3,6 @@ import {
   Sparkles,
   Headset,
   Wrench,
-  Timer,
   Eye,
   HeartHandshake,
   type LucideIcon,

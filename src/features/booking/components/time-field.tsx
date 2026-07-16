@@ -132,7 +132,10 @@ export function TimeField({
           id={id}
           type="button"
           disabled={disabled}
-          aria-invalid={hasError}
+          // `aria-invalid` isn't supported on the implicit `button` role, so the
+          // error is announced by pointing at the message instead — same wiring
+          // as FloatingField, which previously this control was missing.
+          aria-describedby={hasError ? `${id}-error` : undefined}
           aria-haspopup="dialog"
           aria-expanded={open}
           onClick={() => setOpen((o) => !o)}
