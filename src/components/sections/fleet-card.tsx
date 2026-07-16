@@ -4,7 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarCheck, Check, ChevronDown } from "lucide-react";
+import { CalendarCheck, Check, ChevronDown, Sparkles } from "lucide-react";
 
 import type { Bike } from "@/lib/data";
 import { cn } from "@/lib/utils";
@@ -95,8 +95,14 @@ export function FleetCard({ bike }: { bike: Bike }) {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden"
             >
+              {/* per-bike highlight — the one-line reason to pick this ride */}
+              <p className="mt-5 flex items-start gap-2 rounded-xl bg-brand/5 px-3 py-2.5 text-[13px] font-medium leading-snug text-foreground/80">
+                <Sparkles className="mt-0.5 size-4 shrink-0 text-brand" />
+                {bike.highlight}
+              </p>
+
               {/* spec chips */}
-              <div className="mt-5 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 {bike.specs.map((spec) => (
                   <span
                     key={spec.label}
