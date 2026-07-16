@@ -23,6 +23,9 @@ type Moment = {
   icon: LucideIcon;
 };
 
+// Accents stay within the brand family — warm ambers, brand reds and neutral
+// zincs, each melting into black — so the rail reads as one premium system
+// rather than a generic multi-colour grid.
 const moments: Moment[] = [
   {
     title: "Sunrise commutes",
@@ -39,7 +42,7 @@ const moments: Moment[] = [
   {
     title: "Weekend getaways",
     caption: "Escape the city. Chase the open road.",
-    accent: "from-emerald-600 via-zinc-800 to-black",
+    accent: "from-amber-600 via-zinc-800 to-black",
     icon: Mountain,
   },
   {
@@ -51,13 +54,13 @@ const moments: Moment[] = [
   {
     title: "Errand days",
     caption: "Shopping, banking, chores — all in one ride.",
-    accent: "from-indigo-600 via-zinc-800 to-black",
+    accent: "from-stone-500 via-zinc-800 to-black",
     icon: ShoppingBag,
   },
   {
     title: "Late-night drives",
     caption: "From sunrise to midnight, the city is yours.",
-    accent: "from-violet-700 via-zinc-900 to-black",
+    accent: "from-zinc-700 via-brand-900 to-black",
     icon: Moon,
   },
 ];
