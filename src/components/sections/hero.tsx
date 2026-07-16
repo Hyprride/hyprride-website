@@ -20,6 +20,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { CtaButtons } from "@/components/shared/cta-buttons";
+import { GoogleGIcon } from "@/components/shared/icons";
 import { fleet, googleRating } from "@/lib/data";
 
 const easing = [0.21, 0.47, 0.32, 0.98] as const;
@@ -138,7 +139,9 @@ export function Hero() {
                 }`}
                 className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-card/80 px-3.5 py-1.5 text-xs font-semibold tracking-[0.04em] text-foreground/80 backdrop-blur-md transition-colors hover:border-foreground/30 hover:text-foreground"
               >
-                <span className="flex items-center gap-0.5 text-brand">
+                <GoogleGIcon className="size-3.5" />
+                {/* Google's own star amber — matches the testimonials section */}
+                <span className="flex items-center gap-0.5 text-[#FBBC04]">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star key={i} className="size-3 fill-current" aria-hidden />
                   ))}
