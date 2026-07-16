@@ -9,7 +9,12 @@ const stepIcons = [CalendarCheck, FileText, KeyRound, Bike];
 
 export function HowItWorks() {
   return (
-    <section className="py-20 sm:py-28">
+    // A deliberate dark beat in the page's rhythm, between two lighter bands.
+    // `dark` re-points the design tokens for this subtree only (see `.dark` in
+    // globals.css), so headings, cards, borders and muted text all invert
+    // coherently — no per-element white overrides. The site is force-lit light
+    // globally; this is a tonal band, not a theme switch.
+    <section className="dark border-y border-border bg-background py-20 text-foreground sm:py-28">
       <div className="mx-auto max-w-8xl px-5 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="How it works"
