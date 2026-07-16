@@ -25,13 +25,13 @@ export function FleetCard({ bike }: { bike: Bike }) {
     <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-border bg-card p-3 transition-all duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-elevated">
       <div className="relative overflow-hidden rounded-[1.4rem]">
         {bike.image ? (
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-card to-muted">
+          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[1.4rem] bg-product-stage shadow-[inset_0_0_50px_rgba(0,0,0,0.06)]">
             <Image
               src={bike.image}
               alt={`${bike.name} ${bike.model} (${bike.engine}) available to rent at HYPRRIDE`}
               fill
               sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
-              className="object-contain p-3 transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              className="object-contain p-3 transition-transform duration-700 ease-premium group-hover:scale-[1.05]"
             />
             <span className="absolute bottom-3 left-3 rounded-full border border-black/10 bg-white/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-700 backdrop-blur-sm">
               {bike.engine}
