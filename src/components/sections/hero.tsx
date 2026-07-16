@@ -3,12 +3,24 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { CalendarCheck, ChevronDown, Star } from "lucide-react";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import {
+  BadgeIndianRupee,
+  CalendarCheck,
+  ChevronDown,
+  ShieldCheck,
+  Star,
+  Zap,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { CtaButtons } from "@/components/shared/cta-buttons";
-import { googleRating } from "@/lib/data";
+import { fleet, googleRating } from "@/lib/data";
 
 const easing = [0.21, 0.47, 0.32, 0.98] as const;
 
@@ -19,6 +31,13 @@ const HERO_IMAGES = [
   { src: "/hero-apache-r.jpg", alt: "TVS Apache RTR ready to ride with HYPRRIDE" },
 ];
 const ROTATE_MS = 5000;
+
+/** At-a-glance promises — each is backed by a real HYPRRIDE policy. */
+const TRUST_CHIPS = [
+  { icon: ShieldCheck, label: "Helmet included" },
+  { icon: BadgeIndianRupee, label: "No hidden charges" },
+  { icon: Zap, label: "Instant booking" },
+] as const;
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -31,12 +50,14 @@ const fadeUp = {
 
 export function Hero() {
   const ref = React.useRef<HTMLElement>(null);
+  const prefersReduced = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
 
-  const yContent = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const yShift = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const yContent = prefersReduced ? 0 : yShift;
   const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   // Cycle the background image on a loop.
@@ -84,7 +105,17 @@ export function Hero() {
         {slides("object-cover object-[58%_center]")}
       </div>
 
-      {/* Content: stacked on mobile (text over gold, photo band below),
+      {/* Desktop legibility scrim — guarantees text contrast over any photo */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-black/75 via-black/40 to-transparent sm:block"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-2/5 bg-gradient-to-t from-black/55 to-transparent sm:block"
+      />
+
+      {/* Content: stacked on mobile (text over red, photo band below),
           centered overlay on desktop */}
       <div className="relative z-10 flex flex-1 flex-col sm:block">
         <motion.div
@@ -109,7 +140,7 @@ export function Hero() {
               >
                 <span className="flex items-center gap-0.5 text-brand">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="size-3 fill-current" />
+                    <Star key={i} className="size-3 fill-current" aria-hidden />
                   ))}
                 </span>
                 <span className="font-bold text-foreground">
@@ -150,8 +181,8 @@ export function Hero() {
               animate="show"
               className="mt-6 max-w-xl text-pretty text-base font-medium leading-relaxed text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,0.35)] sm:mt-7 sm:text-xl"
             >
-              Clean bikes, fair prices, instant booking, and a ride you can
-              trust.
+              Sanitised bikes, transparent pricing and instant booking — a
+              premium ride you can genuinely trust, right across Hyderabad.
             </motion.p>
 
             <motion.div
@@ -174,16 +205,36 @@ export function Hero() {
               />
             </motion.div>
 
-            <motion.dl
+            {/* Trust chips — quick, real promises shown on every viewport */}
+            <motion.ul
               custom={5}
               variants={fadeUp}
               initial="hidden"
               animate="show"
-              className="mt-9 hidden max-w-lg grid-cols-2 gap-6 border-t border-white/25 pt-7 sm:mt-12 sm:grid"
+              className="mt-6 flex flex-wrap gap-2 sm:mt-7"
+            >
+              {TRUST_CHIPS.map(({ icon: Icon, label }) => (
+                <li
+                  key={label}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/25 px-3 py-1.5 text-xs font-medium text-white/85 backdrop-blur-md"
+                >
+                  <Icon className="size-3.5 text-brand" aria-hidden />
+                  {label}
+                </li>
+              ))}
+            </motion.ul>
+
+            <motion.dl
+              custom={6}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              className="mt-9 hidden max-w-lg grid-cols-3 gap-6 border-t border-white/25 pt-7 sm:mt-11 sm:grid"
             >
               {[
-                { v: "7AM–12AM", l: "Open daily" },
                 { v: "₹79", l: "Starting from" },
+                { v: String(fleet.length), l: "Bikes in the fleet" },
+                { v: `${googleRating.rating.toFixed(1)}★`, l: "Google-rated" },
               ].map((stat) => (
                 <div key={stat.l}>
                   <dt className="text-xl font-bold tracking-tight text-white sm:text-2xl">
@@ -201,6 +252,11 @@ export function Hero() {
         {/* Mobile: rotating photo band beneath the text */}
         <div className="relative h-[42vh] w-full shrink-0 sm:hidden">
           {slides("object-cover object-[58%_center]")}
+          {/* Blend the band into the text area above it */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[#080303] to-transparent"
+          />
         </div>
       </div>
 
@@ -219,7 +275,7 @@ export function Hero() {
         </span>
         <span className="grid h-9 w-6 place-items-start justify-center rounded-full border border-white/25 p-1.5">
           <motion.span
-            animate={{ y: [0, 8, 0] }}
+            animate={prefersReduced ? undefined : { y: [0, 8, 0] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
             className="size-1.5 rounded-full bg-brand"
           />
