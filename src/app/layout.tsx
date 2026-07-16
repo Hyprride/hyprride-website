@@ -19,6 +19,18 @@ const sora = Sora({
   display: "swap",
 });
 
+/**
+ * Social share image (Open Graph + Twitter). A real fleet photo from /public,
+ * sized for large-summary cards — matters most for WhatsApp/Instagram shares,
+ * HYPRRIDE's primary channels. Resolved to an absolute URL via metadataBase.
+ */
+const ogImage = {
+  url: "/hero-apache-r.jpg",
+  width: 1376,
+  height: 768,
+  alt: `${siteConfig.name} — ${siteConfig.shortDescription}`,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
@@ -50,11 +62,13 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     title: `${siteConfig.name} — ${siteConfig.shortDescription}`,
     description: siteConfig.description,
+    images: [ogImage],
   },
   twitter: {
     card: "summary_large_image",
     title: `${siteConfig.name} — ${siteConfig.shortDescription}`,
     description: siteConfig.description,
+    images: [ogImage.url],
   },
   robots: {
     index: true,
