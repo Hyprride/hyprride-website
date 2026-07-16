@@ -22,10 +22,10 @@ export function FleetCard({ bike }: { bike: Bike }) {
   const message = `Hi HYPRRIDE 👋 I'm interested in renting the ${bike.name} ${bike.model} (${bike.engine}). Is it available?`;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-border bg-card p-3 transition-all duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-soft">
+    <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-border bg-card p-3 transition-all duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-elevated">
       <div className="relative overflow-hidden rounded-[1.4rem]">
         {bike.image ? (
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-zinc-100 to-zinc-300">
+          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-card to-muted">
             <Image
               src={bike.image}
               alt={`${bike.name} ${bike.model} (${bike.engine}) available to rent at HYPRRIDE`}
@@ -48,6 +48,14 @@ export function FleetCard({ bike }: { bike: Bike }) {
         )}
         <span className="absolute right-4 top-4 rounded-full border border-white/15 bg-black/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white/80 backdrop-blur-sm">
           {bike.category}
+        </span>
+        {/* Honest catalogue status — part of the active, bookable fleet */}
+        <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-black/5 bg-white/85 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-emerald-700 shadow-sm backdrop-blur-sm">
+          <span className="relative flex size-1.5" aria-hidden>
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-70" />
+            <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
+          </span>
+          Available
         </span>
       </div>
 
