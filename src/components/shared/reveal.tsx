@@ -17,7 +17,8 @@ const easing = [0.21, 0.47, 0.32, 0.98] as const;
 
 /**
  * Fade-and-rise reveal that triggers once when scrolled into view.
- * Honours prefers-reduced-motion automatically via Framer Motion.
+ * Honours prefers-reduced-motion via the root MotionConfig (see
+ * MotionProvider): the rise is skipped, the fade still plays.
  */
 export function Reveal({
   children,

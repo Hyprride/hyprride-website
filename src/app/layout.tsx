@@ -3,6 +3,7 @@ import { Inter, Sora } from "next/font/google";
 
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { MotionProvider } from "@/components/motion-provider";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/lib/site";
 
@@ -18,6 +19,18 @@ const sora = Sora({
   variable: "--font-display",
   display: "swap",
 });
+
+/**
+ * Social share image (Open Graph + Twitter). A real fleet photo from /public,
+ * sized for large-summary cards — matters most for WhatsApp/Instagram shares,
+ * HYPRRIDE's primary channels. Resolved to an absolute URL via metadataBase.
+ */
+const ogImage = {
+  url: "/hero-apache-r.jpg",
+  width: 1376,
+  height: 768,
+  alt: `${siteConfig.name} — ${siteConfig.shortDescription}`,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -50,11 +63,13 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     title: `${siteConfig.name} — ${siteConfig.shortDescription}`,
     description: siteConfig.description,
+    images: [ogImage],
   },
   twitter: {
     card: "summary_large_image",
     title: `${siteConfig.name} — ${siteConfig.shortDescription}`,
     description: siteConfig.description,
+    images: [ogImage.url],
   },
   robots: {
     index: true,
@@ -87,13 +102,15 @@ export default function RootLayout({
           forcedTheme="light"
           disableTransitionOnChange
         >
-          <a
-            href="#fleet"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-brand focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-[#1a0606]"
-          >
-            Skip to content
-          </a>
-          {children}
+          <MotionProvider>
+            <a
+              href="#fleet"
+              className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-brand focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-[#1a0606]"
+            >
+              Skip to content
+            </a>
+            {children}
+          </MotionProvider>
         </ThemeProvider>
         <JsonLd />
       </body>

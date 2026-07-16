@@ -18,7 +18,7 @@ export function JsonLd() {
         url: siteConfig.url,
         telephone: contact.phone,
         email: contact.email,
-        image: `${siteConfig.url}/og.png`,
+        image: `${siteConfig.url}/hero-apache-r.jpg`,
         priceRange: "₹₹",
         currenciesAccepted: "INR",
         areaServed: { "@type": "City", name: "Hyderabad" },

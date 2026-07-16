@@ -252,7 +252,7 @@ export function BookingForm() {
                   </SelectContent>
                 </Select>
                 {selectedBike?.image && (
-                  <div className="mt-1 flex items-center gap-3 rounded-xl border border-border bg-gradient-to-br from-zinc-100 to-zinc-200 p-2">
+                  <div className="mt-1 flex items-center gap-3 rounded-xl border border-border bg-gradient-to-br from-card to-muted p-2">
                     <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-lg bg-white/60">
                       <Image
                         src={selectedBike.image}
