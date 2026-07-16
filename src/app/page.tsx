@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { FloatingWhatsApp } from "@/components/shared/floating-whatsapp";
+import { MobileBookingBar } from "@/components/shared/mobile-booking-bar";
 import { Hero } from "@/components/sections/hero";
 import { Fleet } from "@/components/sections/fleet";
 import { Story } from "@/components/sections/story";
@@ -28,6 +29,7 @@ export default function HomePage() {
       </main>
       <Footer />
       <FloatingWhatsApp />
+      <MobileBookingBar />
     </>
   );
 }
