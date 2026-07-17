@@ -1,7 +1,12 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import Link from "next/link";
+import { Handshake, Mail, MapPin, Phone } from "lucide-react";
 
 import { contact, navLinks, siteConfig, whatsappLink } from "@/lib/site";
 import { InstagramGlyph, Logo, WhatsAppIcon } from "@/components/shared/icons";
+
+/** Opens a real conversation rather than pointing at a page we don't have. */
+const PARTNER_MESSAGE =
+  "Hi HYPRRIDE 👋 I'd like to explore a partnership — could we discuss?";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -13,8 +18,9 @@ export function Footer() {
           <div className="md:col-span-5">
             <Logo />
             <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-muted-foreground">
-              {siteConfig.shortDescription}. Clean bikes, transparent pricing and
-              fast support — from sunrise to midnight, HYPRRIDE has your back.
+              Hyderabad doesn&apos;t wait — and neither should you. Clean,
+              serviced bikes with the helmet included and the price fixed, from
+              sunrise to midnight.
             </p>
             <p className="mt-4 text-sm font-medium text-brand">
               {siteConfig.hashtag}
@@ -36,6 +42,15 @@ export function Footer() {
                   </a>
                 </li>
               ))}
+              {/* The booking page had no internal link from the footer at all. */}
+              <li>
+                <Link
+                  href="/book"
+                  className="text-[15px] font-semibold text-brand transition-colors hover:text-brand-700"
+                >
+                  Book a bike
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -64,6 +79,17 @@ export function Footer() {
                   className="text-foreground/80 transition-colors hover:text-brand"
                 >
                   {contact.email}
+                </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Handshake className="size-[18px] shrink-0 text-brand" />
+                <a
+                  href={whatsappLink(PARTNER_MESSAGE)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground/80 transition-colors hover:text-brand"
+                >
+                  Partner with us
                 </a>
               </li>
             </ul>

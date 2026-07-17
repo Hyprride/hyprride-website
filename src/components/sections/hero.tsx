@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CtaButtons } from "@/components/shared/cta-buttons";
 import { GoogleGIcon } from "@/components/shared/icons";
+import { siteConfig } from "@/lib/site";
 import { fleet, googleRating } from "@/lib/data";
 
 const easing = [0.21, 0.47, 0.32, 0.98] as const;
@@ -124,11 +125,79 @@ export function Hero() {
           className="mx-auto flex w-full max-w-8xl flex-1 flex-col justify-start px-5 pb-8 pt-24 sm:min-h-[100svh] sm:justify-center sm:pb-28 sm:pt-28 lg:px-8"
         >
           <div className="max-w-2xl">
-            <motion.div
+            {/* The brand line, demoted to an eyebrow so the emotional
+                headline can carry the hero. */}
+            <motion.p
               custom={0}
               variants={fadeUp}
               initial="hidden"
               animate="show"
+              className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/55"
+            >
+              <span aria-hidden className="h-px w-8 bg-white/30" />
+              {siteConfig.tagline}
+            </motion.p>
+
+            <h1 className="mt-5 text-balance font-display text-[12vw] font-extrabold leading-[0.95] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.4)] sm:text-6xl md:text-7xl lg:text-[5rem]">
+              <motion.span
+                custom={1}
+                variants={fadeUp}
+                initial="hidden"
+                animate="show"
+                className="block"
+              >
+                Hyderabad moves fast.
+              </motion.span>
+              <motion.span
+                custom={2}
+                variants={fadeUp}
+                initial="hidden"
+                animate="show"
+                className="block text-white/55"
+              >
+                So should you.
+              </motion.span>
+            </h1>
+
+            <motion.p
+              custom={3}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              className="mt-6 max-w-xl text-pretty text-base font-medium leading-relaxed text-white/85 [text-shadow:0_1px_12px_rgba(0,0,0,0.35)] sm:mt-7 sm:text-xl"
+            >
+              A clean, serviced bike, booked in minutes. Helmet included, price
+              fixed, no surprises.
+            </motion.p>
+
+            <motion.div
+              custom={4}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:items-center"
+            >
+              <Button asChild size="lg" variant="book">
+                <Link href="/book" aria-label="Book a bike">
+                  <CalendarCheck className="size-[18px]" />
+                  Book now
+                </Link>
+              </Button>
+              <CtaButtons
+                showCall={false}
+                whatsappVariant="glass"
+                whatsappLabel="WhatsApp Us"
+              />
+            </motion.div>
+
+            {/* Proof first — the rating stands alone so it reads as evidence,
+                not as one more feature chip. */}
+            <motion.div
+              custom={5}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              className="mt-7 sm:mt-8"
             >
               <a
                 href={googleRating.url}
@@ -156,65 +225,13 @@ export function Hero() {
               </a>
             </motion.div>
 
-            <h1 className="mt-6 font-display text-[13vw] font-extrabold leading-[0.92] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.4)] sm:text-7xl md:text-8xl lg:text-[7.5rem]">
-              <motion.span
-                custom={1}
-                variants={fadeUp}
-                initial="hidden"
-                animate="show"
-                className="block"
-              >
-                Rent It.
-              </motion.span>
-              <motion.span
-                custom={2}
-                variants={fadeUp}
-                initial="hidden"
-                animate="show"
-                className="block"
-              >
-                Ride It.
-              </motion.span>
-            </h1>
-
-            <motion.p
-              custom={3}
-              variants={fadeUp}
-              initial="hidden"
-              animate="show"
-              className="mt-6 max-w-xl text-pretty text-base font-medium leading-relaxed text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,0.35)] sm:mt-7 sm:text-xl"
-            >
-              Sanitised bikes, transparent pricing and instant booking — a
-              premium ride you can genuinely trust, right across Hyderabad.
-            </motion.p>
-
-            <motion.div
-              custom={4}
-              variants={fadeUp}
-              initial="hidden"
-              animate="show"
-              className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:items-center"
-            >
-              <Button asChild size="lg" variant="book">
-                <Link href="/book" aria-label="Book a bike">
-                  <CalendarCheck className="size-[18px]" />
-                  Book now
-                </Link>
-              </Button>
-              <CtaButtons
-                showCall={false}
-                whatsappVariant="glass"
-                whatsappLabel="WhatsApp Us"
-              />
-            </motion.div>
-
             {/* Trust chips — quick, real promises shown on every viewport */}
             <motion.ul
-              custom={5}
+              custom={6}
               variants={fadeUp}
               initial="hidden"
               animate="show"
-              className="mt-6 flex flex-wrap gap-2 sm:mt-7"
+              className="mt-3 flex flex-wrap gap-2"
             >
               {TRUST_CHIPS.map(({ icon: Icon, label }) => (
                 <li
@@ -228,11 +245,11 @@ export function Hero() {
             </motion.ul>
 
             <motion.dl
-              custom={6}
+              custom={7}
               variants={fadeUp}
               initial="hidden"
               animate="show"
-              className="mt-9 hidden max-w-lg grid-cols-3 gap-6 border-t border-white/25 pt-7 sm:mt-11 sm:grid"
+              className="mt-9 hidden max-w-lg grid-cols-3 gap-6 border-t border-white/25 pt-7 sm:mt-10 sm:grid"
             >
               {[
                 { v: "₹79", l: "Starting from" },

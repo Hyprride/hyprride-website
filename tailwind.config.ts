@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 const config: Config = {
   darkMode: "class",
@@ -52,6 +53,21 @@ const config: Config = {
         "4xl": "2rem",
         "5xl": "2.5rem",
       },
+      backgroundImage: {
+        // Studio staging for product photography: a pool of light behind the
+        // subject falling off to a warmer, darker edge, so the bike reads as
+        // lit on a surface rather than pasted on a flat colour. Token-based,
+        // so it follows the theme wherever it's used.
+        "product-stage":
+          "radial-gradient(115% 95% at 50% 8%, hsl(var(--card)) 0%, hsl(var(--muted)) 60%, hsl(var(--border)) 100%)",
+      },
+      transitionTimingFunction: {
+        // Expo-out: fast departure, gentle settle, no bounce. The house curve
+        // for interactive surfaces. A named token rather than an arbitrary
+        // value — `ease-[cubic-bezier(...)]` parses as ambiguous and silently
+        // emits no CSS at all.
+        premium: "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
       maxWidth: {
         "8xl": "88rem",
       },
@@ -94,7 +110,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 };
 
 export default config;

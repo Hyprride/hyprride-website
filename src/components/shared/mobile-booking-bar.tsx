@@ -5,6 +5,9 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { CalendarCheck } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+
 /**
  * Persistent mobile "Book now" action. The navbar hides its Book/WhatsApp
  * buttons below the sm breakpoint, so once the hero scrolls away the only
@@ -36,9 +39,12 @@ export function MobileBookingBar() {
           <Link
             href="/book"
             aria-label="Book a bike"
-            className="flex h-14 items-center justify-center gap-2 rounded-full bg-gradient-to-b from-brand-400 to-brand-600 text-base font-semibold text-[#1a0606] shadow-[0_10px_30px_-8px_rgba(240,85,85,0.6)] ring-1 ring-inset ring-black/15 transition-transform active:scale-[0.98]"
+            className={cn(
+              buttonVariants({ variant: "book" }),
+              "h-14 w-full text-base",
+            )}
           >
-            <CalendarCheck className="size-[18px]" />
+            <CalendarCheck />
             Book now
           </Link>
         </motion.div>

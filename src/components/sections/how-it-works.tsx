@@ -9,6 +9,8 @@ const stepIcons = [CalendarCheck, FileText, KeyRound, Bike];
 
 export function HowItWorks() {
   return (
+    // Stays light: the Gallery showcase immediately below is the page's dark
+    // beat, and two adjacent dark bands collapse back into a plateau.
     <section className="py-20 sm:py-28">
       <div className="mx-auto max-w-8xl px-5 sm:px-6 lg:px-8">
         <SectionHeading
