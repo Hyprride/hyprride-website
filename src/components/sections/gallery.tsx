@@ -2,8 +2,14 @@
 
 import * as React from "react";
 import {
-  ArrowLeft,
-  ArrowRight,
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
+import {
   Building2,
   Clapperboard,
   Moon,
@@ -13,7 +19,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-import { SectionHeading } from "@/components/shared/section-heading";
 import { cn } from "@/lib/utils";
 
 type Moment = {
@@ -24,8 +29,8 @@ type Moment = {
 };
 
 // Accents stay within the brand family — warm ambers, brand reds and neutral
-// zincs, each melting into black — so the rail reads as one premium system
-// rather than a generic multi-colour grid.
+// zincs, each melting into black — so the sequence reads as one premium system
+// rather than a generic multi-colour reel.
 const moments: Moment[] = [
   {
     title: "Sunrise commutes",
@@ -65,76 +70,156 @@ const moments: Moment[] = [
   },
 ];
 
-export function Gallery() {
-  const scroller = React.useRef<HTMLDivElement>(null);
+const TOTAL = moments.length;
 
-  const scrollBy = (dir: 1 | -1) => {
-    const el = scroller.current;
-    if (!el) return;
-    const amount = Math.min(el.clientWidth * 0.8, 480) * dir;
-    el.scrollBy({ left: amount, behavior: "smooth" });
-  };
+/**
+ * Opacity for one moment across the pinned scroll. Each moment owns an equal
+ * slice of the track and crossfades with its neighbours over a shoulder at each
+ * boundary — as one reaches 0.5 the next does too, so there is never a gap or a
+ * double-exposure. The first and last clamp to fully visible at the track ends,
+ * so the sequence opens and closes on a held frame rather than a half-fade.
+ */
+function useMomentOpacity(progress: MotionValue<number>, index: number) {
+  const span = 1 / TOTAL;
+  const start = index * span;
+  const end = start + span;
+  const shoulder = span * 0.3;
+  const isFirst = index === 0;
+  const isLast = index === TOTAL - 1;
+
+  const input = isFirst
+    ? [0, end - shoulder, end + shoulder]
+    : isLast
+      ? [start - shoulder, start + shoulder, 1]
+      : [start - shoulder, start + shoulder, end - shoulder, end + shoulder];
+  const output = isFirst ? [1, 1, 0] : isLast ? [0, 1, 1] : [0, 1, 1, 0];
+
+  return useTransform(progress, input, output);
+}
+
+function MomentBackdrop({
+  progress,
+  index,
+  accent,
+}: {
+  progress: MotionValue<number>;
+  index: number;
+  accent: string;
+}) {
+  const opacity = useMomentOpacity(progress, index);
+  return (
+    <motion.div
+      aria-hidden
+      style={{ opacity }}
+      className={cn("absolute inset-0 bg-gradient-to-br", accent)}
+    />
+  );
+}
+
+function MomentCopy({
+  progress,
+  index,
+  moment,
+}: {
+  progress: MotionValue<number>;
+  index: number;
+  moment: Moment;
+}) {
+  const prefersReduced = useReducedMotion();
+  const opacity = useMomentOpacity(progress, index);
+  const span = 1 / TOTAL;
+  // Slow vertical drift through the moment's slice — the parallax that makes it
+  // read as camera movement rather than a slideshow.
+  const drift = useTransform(
+    progress,
+    [index * span, index * span + span],
+    [26, -26],
+  );
+  const Icon = moment.icon;
 
   return (
-    <section className="overflow-hidden py-20 sm:py-28">
-      <div className="mx-auto max-w-8xl px-5 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <SectionHeading
-            align="left"
-            eyebrow="Ride moments"
-            title="Made for every corner of Hyderabad"
-            description="From sunrise to midnight, HYPRRIDE has your back — for every plan, every detour, every day."
+    <motion.div
+      style={{ opacity, y: prefersReduced ? 0 : drift }}
+      className="absolute inset-0 flex flex-col justify-center"
+    >
+      <Icon className="size-10 text-white/70 sm:size-12" aria-hidden />
+      <h3 className="mt-6 text-balance font-display text-4xl font-extrabold leading-[1.02] tracking-tight text-white sm:text-6xl lg:text-7xl">
+        {moment.title}
+      </h3>
+      <p className="mt-4 max-w-md text-pretty text-base leading-relaxed text-white/70 sm:text-lg">
+        {moment.caption}
+      </p>
+    </motion.div>
+  );
+}
+
+/**
+ * The signature section: a pinned, scroll-driven sequence of full-bleed colour
+ * fields and large type. The tall outer track supplies the scroll distance; the
+ * sticky child holds the frame while the moments crossfade through it.
+ */
+export function Gallery() {
+  const trackRef = React.useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ["start start", "end end"],
+  });
+
+  const [active, setActive] = React.useState(0);
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    setActive(Math.min(TOTAL - 1, Math.max(0, Math.floor(v * TOTAL))));
+  });
+
+  return (
+    <section ref={trackRef} className="relative h-[300vh] sm:h-[400vh]">
+      <div className="sticky top-0 h-svh overflow-hidden bg-black">
+        {moments.map((m, i) => (
+          <MomentBackdrop
+            key={m.title}
+            progress={scrollYProgress}
+            index={i}
+            accent={m.accent}
           />
-          <div className="hidden shrink-0 gap-2 sm:flex">
-            <button
-              type="button"
-              onClick={() => scrollBy(-1)}
-              aria-label="Scroll left"
-              className="grid size-11 place-items-center rounded-full border border-border transition-colors hover:bg-muted"
-            >
-              <ArrowLeft className="size-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollBy(1)}
-              aria-label="Scroll right"
-              className="grid size-11 place-items-center rounded-full border border-border transition-colors hover:bg-muted"
-            >
-              <ArrowRight className="size-5" />
-            </button>
+        ))}
+        <div aria-hidden className="absolute inset-0 bg-dot opacity-40" />
+        {/* Vignette — seals the frame so the type sits in the light */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/40"
+        />
+
+        {/* pt-24 keeps the copy clear of the fixed navbar */}
+        <div className="relative mx-auto flex h-full max-w-8xl flex-col px-5 pb-12 pt-24 sm:px-6 lg:px-8">
+          <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/55">
+            <span aria-hidden className="h-px w-8 bg-white/30" />
+            Ride moments
+          </p>
+          <h2 className="sr-only">Made for every corner of Hyderabad</h2>
+
+          <div className="relative flex-1">
+            {moments.map((m, i) => (
+              <MomentCopy
+                key={m.title}
+                progress={scrollYProgress}
+                index={i}
+                moment={m}
+              />
+            ))}
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="h-0.5 flex-1 overflow-hidden rounded-full bg-white/15">
+              <motion.div
+                style={{ scaleX: scrollYProgress }}
+                className="h-full origin-left bg-brand"
+              />
+            </div>
+            <p className="text-xs font-semibold tabular-nums tracking-[0.2em] text-white/60">
+              {String(active + 1).padStart(2, "0")} /{" "}
+              {String(TOTAL).padStart(2, "0")}
+            </p>
           </div>
         </div>
-      </div>
-
-      <div
-        ref={scroller}
-        className="no-scrollbar mask-fade-x mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-5 pb-2 sm:px-6 lg:px-8"
-      >
-        {moments.map((moment) => (
-          <article
-            key={moment.title}
-            className="group relative aspect-[3/4] w-[78vw] max-w-[320px] shrink-0 snap-center overflow-hidden rounded-[1.75rem] border border-border sm:w-[340px]"
-          >
-            <div
-              className={cn(
-                "absolute inset-0 bg-gradient-to-br transition-transform duration-700 ease-out group-hover:scale-110",
-                moment.accent,
-              )}
-            />
-            <div className="absolute inset-0 bg-dot opacity-50" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-
-            <moment.icon className="absolute right-6 top-6 size-9 text-white/70 transition-transform duration-500 group-hover:-translate-y-1" />
-
-            <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-              <h3 className="text-xl font-semibold tracking-tight">
-                {moment.title}
-              </h3>
-              <p className="mt-1.5 text-sm text-white/70">{moment.caption}</p>
-            </div>
-          </article>
-        ))}
-        <div className="w-px shrink-0" aria-hidden="true" />
       </div>
     </section>
   );
