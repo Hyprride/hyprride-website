@@ -22,16 +22,19 @@ export function FleetCard({ bike }: { bike: Bike }) {
   const message = `Hi HYPRRIDE 👋 I'm interested in renting the ${bike.name} ${bike.model} (${bike.engine}). Is it available?`;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-border bg-card p-3 transition-all duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-elevated">
-      <div className="relative overflow-hidden rounded-[1.4rem]">
+    <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-border bg-card transition-all duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-elevated">
+      {/* Photo runs full-bleed to the card edge; the article's overflow-hidden
+          clips it to the card radius, so there's one frame instead of a photo
+          boxed inside a stage inside a card. */}
+      <div className="relative overflow-hidden">
         {bike.image ? (
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[1.4rem] bg-product-stage shadow-[inset_0_0_50px_rgba(0,0,0,0.06)]">
+          <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
             <Image
               src={bike.image}
               alt={`${bike.name} ${bike.model} (${bike.engine}) available to rent at HYPRRIDE`}
               fill
               sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
-              className="object-contain p-3 transition-transform duration-700 ease-premium group-hover:scale-[1.05]"
+              className="object-cover transition-transform duration-700 ease-premium group-hover:scale-[1.05]"
             />
             <span className="absolute bottom-3 left-3 rounded-full border border-black/10 bg-white/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-700 backdrop-blur-sm">
               {bike.engine}
@@ -51,7 +54,7 @@ export function FleetCard({ bike }: { bike: Bike }) {
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col px-4 pb-4 pt-6">
+      <div className="flex flex-1 flex-col px-7 pb-7 pt-6">
         {/* Always visible: name, tagline, from-price */}
         <div className="flex items-start justify-between gap-3">
           <div>
